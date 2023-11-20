@@ -718,6 +718,6 @@ log_out = customtkinter.CTkButton(master=VVI_page, text="Log out", command=user_
 log_out.pack(pady=6, padx=10)
 
 
-#test()
+test()
 show_login_page()
 root.mainloop()
