@@ -22,6 +22,13 @@ Fn_set = b'\x55'
 
 
 def test():
+    Start = b'\x16'
+
+    # second bit
+
+    SYNC = b'\x22'
+
+    Fn_set = b'\x55'
 
     mode = struct.pack("B", 0)
 
