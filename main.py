@@ -8,7 +8,7 @@ import tkinter as tk
 import serial.tools.list_ports
 import struct
 from serial import Serial
-from DCM_serial import test
+# from DCM_serial import test
 
 customtkinter.set_appearance_mode("dark")
 customtkinter.set_default_color_theme("dark-blue")
