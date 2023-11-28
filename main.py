@@ -1,17 +1,5 @@
 import customtkinter
 import hashlib
-from tkinter import messagebox
-import time
-import threading
-import tkinter as tk
-#import usb.core
-import serial.tools.list_ports
-import struct
-from serial import Serial
-# from DCM_serial import test
-
-import customtkinter
-import hashlib
 import serial
 #import serial.tools.list_ports
 from tkinter import messagebox
@@ -86,17 +74,14 @@ def confirm():
         messagebox.showerror('Error', 'Username or password cannot be empty.')
         register_page.pack()
        # return
-    elif username in users:
+    if username in users:
         messagebox.showerror('Error', 'Username already exists.')
         register_page.pack()
       #  return
-    elif ' ' in username or ' ' in password:
-        messagebox.showerror('Error', 'Username or password cannot contain space.')
-        register_page.pack()
-    else:
-        hashed_password = hashlib.sha256(password.encode()).hexdigest()
-        users[username] = hashed_password
-        save_users()
+
+    hashed_password = hashlib.sha256(password.encode()).hexdigest()
+    users[username] = hashed_password
+    save_users()
     new_username.delete(0, 'end')
     new_password.delete(0, 'end')
     register_page.pack_forget()
@@ -140,6 +125,7 @@ def user_log_out():
     login_username.delete(0, 'end')
     login_password.delete(0, 'end')
     show_login_page()
+
 def back_r():
     show_login_page()
     new_username.delete(0,'end')
@@ -172,9 +158,15 @@ def submit_aoo():
     # Verify the lower rate limit parameter
     try:
         aoo_lrl = float(aoo_lrl)
-        if not (30 <= aoo_lrl <= 175):
-            # the input is out of range
+
+        if (30 <= aoo_lrl <= 50) and (aoo_lrl%5 !=0):
             out_of_range = True
+        elif (50 < aoo_lrl <= 90) and (aoo_lrl %1 != 0):
+            out_of_range = True
+        elif (90 < aoo_lrl <= 175) and (aoo_lrl % 5 != 0):
+            out_of_range = True
+        elif not(30 <= aoo_lrl <= 175):
+            out_of_range =True
     except ValueError:
         # the input is not a number
         invalid_input = True
@@ -182,30 +174,28 @@ def submit_aoo():
     try:
         aoo_url = float(aoo_url)
         if not (50 <= aoo_url <= 175):
-            # the input is out of range
+            out_of_range = True
+        elif (50 <= aoo_url <= 175) and (aoo_url % 5 != 0):
             out_of_range = True
     except ValueError:
         # the input is not a number
         invalid_input = True
-
     # Verify the atrial amplitude
-    if aoo_aa == 'off':
-        # the input can be "off"
-        pass
-    else:
-        try:
-            aoo_aa = float(aoo_aa)
-            if not (0.1 <= aoo_aa <= 5.0):
-                # the input is out of range
-                out_of_range = True
-        except ValueError:
-            # the input is neither a number nor "off"
-            invalid_input = True
+    try:
+        aoo_aa = float(aoo_aa)
+        if not (0 <= aoo_aa <= 100):
+            out_of_range = True
+        elif (0 <= aoo_aa <= 100) and (aoo_aa % 2 !=0):
+            out_of_range =True
+    except ValueError:
+        # the input is neither a number nor "off"
+        invalid_input = True
     # Verify the atrial pulse width
     try:
         aoo_apw = float(aoo_apw)
         if not (1 <= aoo_apw <= 30):
-            # the input is out of range
+            out_of_range = True
+        elif (1<= aoo_apw <= 30) and (aoo_apw %1 !=0):
             out_of_range = True
     except ValueError:
         # the input is not a number
@@ -237,39 +227,43 @@ def submit_voo():
     # Verify the lower rate limit parameter
     try:
         voo_lrl = float(voo_lrl)
-        if not (30 <= voo_lrl <= 175):
-            # the input is out of range
+        if (30 <= voo_lrl <= 50) and (voo_lrl % 5 !=0):
             out_of_range = True
+        elif (50 < voo_lrl <= 90) and (voo_lrl % 1 != 0):
+            out_of_range = True
+        elif (90 < voo_lrl <=175) and (voo_lrl % 5 !=0):
+            out_of_range = True
+        elif not(30 <= voo_lrl <= 175):
+            out_of_range =True
     except ValueError:
         # the input is not a number
         invalid_input = True
     # Verify the upper rate limit parameter
     try:
         voo_url = float(voo_url)
-        if not (50 <= voo_url <= 175):
-            # the input is out of range
+        if (50 <= voo_url <= 175) and (voo_url % 5 !=0):
+            out_of_range = True
+        elif not (50 <= voo_url <= 175):
             out_of_range = True
     except ValueError:
         # the input is not a number
         invalid_input = True
     # Verify the ventricular amplitude
-    if voo_va == 'off':
-        # the input can be "off"
-        pass
-    else:
-        try:
-            voo_va = float(voo_va)
-            if not (0.1 <= voo_va <= 5.0):
-                # the input is out of range
-                out_of_range = True
-        except ValueError:
+    try:
+        voo_va = float(voo_va)
+        if (0 <= voo_va <= 100) and (voo_va % 2 != 0):
+            out_of_range = True
+        elif not (0 <= voo_va <= 100):
+            out_of_range = True
+    except ValueError:
             # the input is neither a number nor "off"
-            invalid_input = True
+        invalid_input = True
     # Verify the ventricular pulse width
     try:
         voo_vpw = float(voo_vpw)
-        if not (1 <= voo_vpw <= 30):
-            # the input is out of range
+        if(1 <= voo_vpw <= 30) and (voo_vpw % 1 != 0):
+            out_of_range = True
+        elif not (1 <= voo_vpw <= 30):
             out_of_range = True
     except ValueError:
         # the input is not a number
@@ -305,48 +299,53 @@ def submit_aai():
     # Verify the lower rate limit parameter
     try:
         aai_lrl = float(aai_lrl)
-        if not (30 <= aai_lrl <= 175):
-            # the input is out of range
+        if (30 <= aai_lrl <= 50) and (aai_lrl % 5 !=0):
             out_of_range = True
+        elif (50 < aai_lrl <= 90) and (aai_lrl % 1 != 0):
+            out_of_range = True
+        elif (90 < aai_lrl <=175) and (aai_lrl % 5 !=0):
+            out_of_range = True
+        elif not(30 <= aai_lrl <= 175):
+            out_of_range =True
     except ValueError:
         # the input is not a number
         invalid_input = True
     # Verify the upper rate limit parameter
     try:
         aai_url = float(aai_url)
-        if not (50 <= aai_url <= 175):
-            # the input is out of range
+        if (50 <= aai_url <= 175) and (aai_url % 5 !=0):
+            out_of_range = True
+        elif not (50 <= aai_url <= 175):
             out_of_range = True
     except ValueError:
         # the input is not a number
         invalid_input = True
 
     # Verify the atrial amplitude
-    if aai_aa == 'off':
-        # the input can be "off"
-        pass
-    else:
-        try:
-            aai_aa = float(aai_aa)
-            if not (0.1 <= aai_aa <= 5.0):
-                # the input is out of range
-                out_of_range = True
-        except ValueError:
+    try:
+        aai_aa = float(aai_aa)
+        if (0 <= aai_aa <= 100) and (aai_aa % 2 != 0):
+            out_of_range = True
+        elif not (0 <= aai_aa <= 100):
+            out_of_range = True
+    except ValueError:
             # the input is neither a number nor "off"
-            invalid_input = True
+        invalid_input = True
     # Verify the atrial pulse width
     try:
         aai_apw = float(aai_apw)
-        if not (1 <= aai_apw <= 30):
-            # the input is out of range
+        if (1 <= aai_apw <= 30) and (aai_apw % 1 != 0):
+            out_of_range = True
+        elif not (1 <= aai_apw <= 30):
             out_of_range = True
     except ValueError:
         # the input is not a number
         invalid_input = True
     try:
         aai_arp = float(aai_arp)
-        if not(150 <= aai_arp <= 500):
-            # the input is out of range
+        if (150 <= aai_arp <= 500) and (aai_arp % 10 != 0):
+            out_of_range = True
+        elif not (150 <= aai_arp <= 500):
             out_of_range = True
     except ValueError:
         # the input is not a number
@@ -354,14 +353,18 @@ def submit_aai():
     #Verify the atrial sensitivity
     try:
         aai_as = float(aai_as)
-        if not(0 <=aai_as<= 5):
+        if (0 <=aai_as<= 100) and (aai_as % 2 != 0):
             out_of_range = True
+        elif not (0 <=aai_as<= 100):
+            out_of_range =True
     except ValueError:
         invalid_input = True
     #Verify the PVARP
     try:
         aai_pvarp = float(aai_pvarp)
-        if not(150<= aai_pvarp <=500 ):
+        if (150<= aai_pvarp <=500 ) and (aai_pvarp % 10 != 0):
+            out_of_range = True
+        elif not (150<= aai_pvarp <=500 ):
             out_of_range = True
     except ValueError:
         invalid_input = True
@@ -420,8 +423,14 @@ def submit_vvi():
     # Verify the lower rate limit parameter
     try:
         vvi_lrl = float(vvi_lrl)
-        if not (30 <= vvi_lrl <= 175):
+        if (30 <= vvi_lrl <= 50) and (vvi_lrl %5 !=0):
             # the input is out of range
+            out_of_range = True
+        elif (50 < vvi_lrl <= 90) and (vvi_lrl %1 !=0):
+            out_of_range = True
+        elif (90 < vvi_lrl <= 150) and (vvi_lrl %5 != 0):
+            out_of_range = True
+        elif not (30 <= vvi_lrl <= 50):
             out_of_range = True
     except ValueError:
         # the input is not a number
@@ -429,39 +438,43 @@ def submit_vvi():
     # Verify the upper rate limit parameter
     try:
         vvi_url = float(vvi_url)
-        if not (50 <= vvi_url <= 175):
+        if(50 <= vvi_url <= 175) and (vvi_lrl %5 !=0):
             # the input is out of range
+            out_of_range = True
+        elif not(50 <= vvi_url <= 175):
             out_of_range = True
     except ValueError:
         # the input is not a number
         invalid_input = True
 
     # Verify the atrial amplitude
-    if vvi_va == 'off':
-        # the input can be "off"
-        pass
-    else:
-        try:
-            vvi_va = float(vvi_va)
-            if not (0.1 <= vvi_va <= 5.0):
+    try:
+        vvi_va = float(vvi_va)
+        if (0 <= vvi_va <= 100) and  (vvi_va %2 !=0):
                 # the input is out of range
-                out_of_range = True
-        except ValueError:
+            out_of_range = True
+        elif not (0 <= vvi_va <= 100):
+            out_of_range = True
+    except ValueError:
             # the input is neither a number nor "off"
-            invalid_input = True
+        invalid_input = True
     # Verify the atrial pulse width
     try:
         vvi_vpw = float(vvi_vpw)
-        if not (1 <= vvi_vpw <= 30):
+        if (1 <= vvi_vpw <= 30) and (vvi_vpw %1 != 0):
             # the input is out of range
+            out_of_range = True
+        elif not (1 <= vvi_vpw <= 30):
             out_of_range = True
     except ValueError:
         # the input is not a number
         invalid_input = True
     try:
         vvi_vrp = float(vvi_vrp)
-        if not (150 <= vvi_vrp <= 500):
+        if (150 <= vvi_vrp <= 500) and (vvi_vrp%10 !=0):
             # the input is out of range
+            out_of_range = True
+        elif not (150 <= vvi_vrp <= 500):
             out_of_range = True
     except ValueError:
         # the input is not a number
@@ -469,7 +482,9 @@ def submit_vvi():
     #Verify the ventricular sensitivity
     try:
         vvi_vs = float(vvi_vs)
-        if not(0<=vvi_vs<=5):
+        if(0<=vvi_vs<=100) and (vvi_vs %2 !=0):
+            out_of_range = True
+        elif not (0<=vvi_vs<=100) :
             out_of_range = True
     except ValueError:
         invalid_input = True
@@ -530,40 +545,48 @@ def submit_aoor():
     # Verify the lower rate limit parameter
     try:
         aoor_lrl = float(aoor_lrl)
-        if not (30 <= aoor_lrl <= 175):
+        if (30 <= aoor_lrl <= 50) and (aoor_lrl % 5 != 0):
             # the input is out of range
             out_of_range = True
+        elif (50 < aoor_lrl <= 90) and (aoor_lrl %1 != 0):
+            out_of_range = True
+        elif(90 < aoor_lrl <= 175) and (aoor_lrl %5 !=0):
+            out_of_range = True
+        elif not(30 <= aoor_lrl <= 175):
+            out_of_range =True
     except ValueError:
         # the input is not a number
         invalid_input = True
     # Verify the upper rate limit parameter
     try:
         aoor_url = float(aoor_url)
-        if not (50 <= aoor_url <= 175):
+        if (50 <= aoor_url <= 175) and (aoor_url %5 != 0):
             # the input is out of range
+            out_of_range = True
+        elif not (50 <= aoor_url <= 175):
             out_of_range = True
     except ValueError:
         # the input is not a number
         invalid_input = True
 
     # Verify the atrial amplitude
-    if aoor_aa == 'off':
-        # the input can be "off"
-        pass
-    else:
-        try:
-            aoor_aa = float(aoor_aa)
-            if not (0.1 <= aoor_aa <= 5.0):
-                # the input is out of range
-                out_of_range = True
-        except ValueError:
+    try:
+        aoor_aa = float(aoor_aa)
+        if (0 <= aoor_aa <= 100) and (aoor_aa %2 != 0):
+            # the input is out of range
+            out_of_range = True
+        elif not (0 <=aoor_aa <= 100):
+            out_of_range = True
+    except ValueError:
             # the input is neither a number nor "off"
-            invalid_input = True
+        invalid_input = True
     # Verify the atrial pulse width
     try:
         aoor_apw = float(aoor_apw)
-        if not (1 <= aoor_apw <= 30):
+        if (1 <= aoor_apw <= 30) and (aoor_apw % 1 != 0):
             # the input is out of range
+            out_of_range = True
+        elif not(1 <= aoor_apw <= 30):
             out_of_range = True
     except ValueError:
         # the input is not a number
@@ -572,8 +595,10 @@ def submit_aoor():
     # Verify the Maximum Sensor Rate
     try:
         aoor_msr = float(aoor_msr)
-        if not (50 <= aoor_msr <= 175):
+        if (50 <= aoor_msr <= 175) and (aoor_msr %5 !=0):
             # the input is out of range
+            out_of_range = True
+        elif not (50 <= aoor_msr <= 175):
             out_of_range = True
     except ValueError:
         # the input is not a number
@@ -582,8 +607,10 @@ def submit_aoor():
     # Verify the Reaction Time
     try:
         aoor_reactionT = float(aoor_reactionT)
-        if not (10 <= aoor_reactionT <= 50):
+        if (10 <= aoor_reactionT <= 50) and (aoor_reactionT % 10 !=0):
             # the input is out of range
+            out_of_range = True
+        elif not(10 <= aoor_reactionT <= 50):
             out_of_range = True
     except ValueError:
         # the input is not a number
@@ -591,8 +618,10 @@ def submit_aoor():
     # Verify the Response Factor
     try:
         aoor_rf= float(aoor_rf)
-        if not (1 <= aoor_rf <= 16):
+        if (1 <= aoor_rf <= 16) and (aoor_rf % 1 != 0):
             # the input is out of range
+            out_of_range = True
+        elif not(1<= aoor_rf <= 16):
             out_of_range = True
     except ValueError:
         # the input is not a number
@@ -600,8 +629,10 @@ def submit_aoor():
     # Verify the Recovery Time
     try:
         aoor_recoveryT= float(aoor_recoveryT)
-        if not (2 <= aoor_recoveryT <= 16):
+        if (2 <= aoor_recoveryT <= 16) and (aoor_recoveryT % 1 !=0):
             # the input is out of range
+            out_of_range = True
+        elif not (2 <= aoor_recoveryT <= 16):
             out_of_range = True
     except ValueError:
         # the input is not a number
@@ -641,8 +672,14 @@ def submit_voor():
     # Verify the lower rate limit parameter
     try:
         voor_lrl = float(voor_lrl)
-        if not (30 <= voor_lrl <= 175):
+        if (30 <= voor_lrl <= 50) and (voor_lrl % 5 != 0):
             # the input is out of range
+            out_of_range = True
+        elif(50 < voor_lrl <= 90) and (voor_lrl %1 != 0):
+            out_of_range = True
+        elif(90 < voor_lrl <= 175) and (voor_lrl %5 != 0):
+            out_of_range = True
+        elif not (30 <= voor_lrl <= 175):
             out_of_range = True
     except ValueError:
         # the input is not a number
@@ -650,30 +687,33 @@ def submit_voor():
     # Verify the upper rate limit parameter
     try:
         voor_url = float(voor_url)
-        if not (50 <= voor_url <= 175):
+        if (50 <= voor_url <= 175) and (voor_url %5 !=0):
             # the input is out of range
+            out_of_range = True
+        elif not (50 <= voor_url <= 175):
             out_of_range = True
     except ValueError:
         # the input is not a number
         invalid_input = True
     # Verify the ventricular amplitude
-    if voor_va == 'off':
-        # the input can be "off"
-        pass
-    else:
-        try:
-            voor_va = float(voor_va)
-            if not (0.1 <= voor_va <= 5.0):
+
+    try:
+        voor_va = float(voor_va)
+        if  (0 <= voor_va <= 100) and (voor_va % 2 != 0):
                 # the input is out of range
-                out_of_range = True
-        except ValueError:
+            out_of_range = True
+        elif not (0 <= voor_va <= 100):
+            out_of_range = True
+    except ValueError:
             # the input is neither a number nor "off"
-            invalid_input = True
+        nvalid_input = True
     # Verify the ventricular pulse width
     try:
         voor_vpw = float(voor_vpw)
-        if not (1 <= voor_vpw <= 30):
+        if (1 <= voor_vpw <= 30) and  (voor_vpw % 1 != 0):
             # the input is out of range
+            out_of_range = True
+        elif not (1<=voor_vpw<=30):
             out_of_range = True
     except ValueError:
         # the input is not a number
@@ -681,8 +721,10 @@ def submit_voor():
     # Verify the Maximum Sensor Rate
     try:
         voor_msr = float(voor_msr)
-        if not (50 <= voor_msr <= 175):
+        if (50 <= voor_msr <= 175) and (voor_msr % 5 !=0):
             # the input is out of range
+            out_of_range = True
+        elif not (50 <= voor_msr <= 175):
             out_of_range = True
     except ValueError:
         # the input is not a number
@@ -691,8 +733,10 @@ def submit_voor():
     # Verify the Reaction Time
     try:
         voor_reactionT = float(voor_reactionT)
-        if not (10 <= voor_reactionT <= 50):
+        if (10 <= voor_reactionT <= 50) and (voor_reactionT % 10 != 0):
             # the input is out of range
+            out_of_range = True
+        elif not (10<=voor_reactionT<=50):
             out_of_range = True
     except ValueError:
         # the input is not a number
@@ -700,8 +744,10 @@ def submit_voor():
     # Verify the Response Factor
     try:
         voor_rf= float(voor_rf)
-        if not (1 <= voor_rf <= 16):
+        if (1 <= voor_rf <= 16) and (voor_rf % 1 != 0):
             # the input is out of range
+            out_of_range = True
+        elif not (1 <= voor_rf <= 16):
             out_of_range = True
     except ValueError:
         # the input is not a number
@@ -709,8 +755,10 @@ def submit_voor():
     # Verify the Recovery Time
     try:
         voor_recoveryT= float(voor_recoveryT)
-        if not (2 <= voor_recoveryT <= 16):
+        if (2 <= voor_recoveryT <= 16) and (voor_recoveryT %1 !=0):
             # the input is out of range
+            out_of_range = True
+        elif not (2<= voor_recoveryT <=16):
             out_of_range = True
     except ValueError:
         # the input is not a number
@@ -754,8 +802,14 @@ def submit_aair():
     # Verify the lower rate limit parameter
     try:
         aair_lrl = float(aair_lrl)
-        if not (30 <= aair_lrl <= 175):
+        if (30 <= aair_lrl <= 50) and (aair_lrl %5 !=0):
             # the input is out of range
+            out_of_range = True
+        elif (50 < aair_lrl <= 90) and (aair_lrl % 1 !=0):
+            out_of_range = True
+        elif(90 < aair_lrl <= 175) and(aair_lrl % 5 !=0):
+            out_of_range = True
+        elif not (30<= aair_lrl <=175):
             out_of_range = True
     except ValueError:
         # the input is not a number
@@ -763,39 +817,43 @@ def submit_aair():
     # Verify the upper rate limit parameter
     try:
         aair_url = float(aair_url)
-        if not (50 <= aair_url <= 175):
+        if (50 <= aair_url <= 175) and (aair_url %5 !=0):
             # the input is out of range
+            out_of_range = True
+        elif not (50 <= aair_url <= 175):
             out_of_range = True
     except ValueError:
         # the input is not a number
         invalid_input = True
 
     # Verify the atrial amplitude
-    if aair_aa == 'off':
-        # the input can be "off"
-        pass
-    else:
-        try:
-            aair_aa = float(aair_aa)
-            if not (0.1 <= aair_aa <= 5.0):
+    try:
+        aair_aa = float(aair_aa)
+        if (0 <= aair_aa <= 100) and (aair_aa % 2 != 0):
                 # the input is out of range
-                out_of_range = True
-        except ValueError:
+            out_of_range = True
+        elif not (0 <= aair_aa <= 100):
+            out_of_range = True
+    except ValueError:
             # the input is neither a number nor "off"
-            invalid_input = True
+        invalid_input = True
     # Verify the atrial pulse width
     try:
         aair_apw = float(aair_apw)
-        if not (1 <= aair_apw <= 30):
+        if (1 <= aair_apw <= 30) and (aair_apw %1 != 0):
             # the input is out of range
+            out_of_range = True
+        elif not (1 <= aair_apw <= 30):
             out_of_range = True
     except ValueError:
         # the input is not a number
         invalid_input = True
     try:
         aair_arp = float(aair_arp)
-        if not(150 <= aair_arp <= 500):
+        if (150 <= aair_arp <= 500) and (aair_arp %10 != 0):
             # the input is out of range
+            out_of_range = True
+        elif not (150 <= aair_arp <= 500):
             out_of_range = True
     except ValueError:
         # the input is not a number
@@ -803,14 +861,18 @@ def submit_aair():
     #Verify the atrial sensitivity
     try:
         aair_as = float(aair_as)
-        if not(0 <=aair_as<= 5):
+        if (0 <=aair_as<= 100) and (aair_as %2 !=0):
+            out_of_range = True
+        elif (0 <=aair_as<= 100):
             out_of_range = True
     except ValueError:
         invalid_input = True
     #Verify the PVARP
     try:
         aair_pvarp = float(aair_pvarp)
-        if not(150<= aair_pvarp <=500 ):
+        if (150<= aair_pvarp <=500 ) and (aair_pvarp %10 !=0):
+            out_of_range = True
+        elif not (150<= aair_pvarp <=500):
             out_of_range = True
     except ValueError:
         invalid_input = True
@@ -840,9 +902,11 @@ def submit_aair():
     # Verify the Maximum Sensor Rate
     try:
         aair_msr = float(aair_msr)
-        if not (50 <= aair_msr <= 175):
+        if (50 <= aair_msr <= 175) and (aair_msr %5 !=0):
             # the input is out of range
             out_of_range = True
+        elif not (50 <= aair_msr <= 175):
+            out_of_range =True
     except ValueError:
         # the input is not a number
         invalid_input = True
@@ -850,8 +914,10 @@ def submit_aair():
     # Verify the Reaction Time
     try:
         aair_reactionT = float(aair_reactionT)
-        if not (10 <= aair_reactionT <= 50):
+        if  (10 <= aair_reactionT <= 50) and (aair_reactionT %10 !=0):
             # the input is out of range
+            out_of_range = True
+        elif not (10 <= aair_reactionT <= 50):
             out_of_range = True
     except ValueError:
         # the input is not a number
@@ -859,8 +925,10 @@ def submit_aair():
     # Verify the Response Factor
     try:
         aair_rf= float(aair_rf)
-        if not (1 <= aair_rf <= 16):
+        if (1 <= aair_rf <= 16) and (aair_rf %1 != 0):
             # the input is out of range
+            out_of_range = True
+        elif not (1<=aair_rf<=16):
             out_of_range = True
     except ValueError:
         # the input is not a number
@@ -868,8 +936,10 @@ def submit_aair():
     # Verify the Recovery Time
     try:
         aair_recoveryT= float(aair_recoveryT)
-        if not (2 <= aair_recoveryT <= 16):
+        if  (2 <= aair_recoveryT <= 16) and (aair_recoveryT %1 !=0):
             # the input is out of range
+            out_of_range = True
+        elif not (2 <= aair_recoveryT <= 16):
             out_of_range = True
     except ValueError:
         # the input is not a number
@@ -913,8 +983,14 @@ def submit_vvir():
     # Verify the lower rate limit parameter
     try:
         vvir_lrl = float(vvir_lrl)
-        if not (30 <= vvir_lrl <= 175):
+        if (30 <= vvir_lrl <= 50) and (vvir_lrl %5 != 0):
             # the input is out of range
+            out_of_range = True
+        elif (50< vvir_lrl <= 90) and (vvir_lrl %1!=0):
+            out_of_range = True
+        elif (90<vvir_lrl<= 175) and (vvir_lrl %5 !=0):
+            out_of_range = True
+        elif not (30 <= vvir_lrl <= 175):
             out_of_range = True
     except ValueError:
         # the input is not a number
@@ -922,47 +998,53 @@ def submit_vvir():
     # Verify the upper rate limit parameter
     try:
         vvir_url = float(vvir_url)
-        if not (50 <= vvir_url <= 175):
+        if (50 <= vvir_url <= 175) and (vvir_url %5 !=0):
             # the input is out of range
+            out_of_range = True
+        elif not (50 <= vvir_url <= 175):
             out_of_range = True
     except ValueError:
         # the input is not a number
         invalid_input = True
 
     # Verify the atrial amplitude
-    if vvir_va == 'off':
-        # the input can be "off"
-        pass
-    else:
-        try:
-            vvir_va = float(vvir_va)
-            if not (0.1 <= vvir_va <= 5.0):
+    try:
+        vvir_va = float(vvir_va)
+        if (0 <= vvir_va <= 100) and (vvir_va %2 !=0):
                 # the input is out of range
-                out_of_range = True
-        except ValueError:
+            out_of_range = True
+        elif not (0 <= vvir_va <= 100):
+            out_of_range = True
+    except ValueError:
             # the input is neither a number nor "off"
-            invalid_input = True
+        invalid_input = True
     # Verify the atrial pulse width
     try:
         vvir_vpw = float(vvir_vpw)
-        if not (1 <= vvir_vpw <= 30):
+        if (1 <= vvir_vpw <= 30) and (vvir_vpw %1 != 0):
             # the input is out of range
+            out_of_range = True
+        elif not (1<= vvir_vpw <= 30):
             out_of_range = True
     except ValueError:
         # the input is not a number
         invalid_input = True
     try:
         vvir_vrp = float(vvir_vrp)
-        if not (150 <= vvir_vrp <= 500):
+        if (150 <= vvir_vrp <= 500) and (vvir_vrp%10 != 0):
             # the input is out of range
             out_of_range = True
+        elif not (150 <= vvir_vrp <= 500):
+            out_of_range =True
     except ValueError:
         # the input is not a number
         invalid_input = True
     #Verify the ventricular sensitivity
     try:
         vvir_vs = float(vvir_vs)
-        if not(0<=vvir_vs<=5):
+        if (0<=vvir_vs<=100) and (vvir_vs %2 !=0):
+            out_of_range = True
+        elif not (0<= vvir_vs <= 100):
             out_of_range = True
     except ValueError:
         invalid_input = True
@@ -982,8 +1064,10 @@ def submit_vvir():
     # Verify the Maximum Sensor Rate
     try:
         vvir_msr = float(vvir_msr)
-        if not (50 <= vvir_msr <= 175):
+        if (50 <= vvir_msr <= 175) and (vvir_msr %5 !=0):
             # the input is out of range
+            out_of_range = True
+        elif not (50 <= vvir_msr<=175):
             out_of_range = True
     except ValueError:
         # the input is not a number
@@ -992,8 +1076,10 @@ def submit_vvir():
     # Verify the Reaction Time
     try:
         vvir_reactionT = float(vvir_reactionT)
-        if not (10 <= vvir_reactionT <= 50):
+        if (10 <= vvir_reactionT <= 50) and (vvir_recoveryT %10 != 0):
             # the input is out of range
+            out_of_range = True
+        elif not (10 <= vvir_reactionT <= 50):
             out_of_range = True
     except ValueError:
         # the input is not a number
@@ -1001,8 +1087,10 @@ def submit_vvir():
     # Verify the Response Factor
     try:
         vvir_rf= float(vvir_rf)
-        if not (1 <= vvir_rf <= 16):
+        if (1 <= vvir_rf <= 16) and (vvir_rf %1 != 0):
             # the input is out of range
+            out_of_range = True
+        elif not (1 <= vvir_rf <= 16) :
             out_of_range = True
     except ValueError:
         # the input is not a number
@@ -1010,8 +1098,10 @@ def submit_vvir():
     # Verify the Recovery Time
     try:
         vvir_recoveryT= float(vvir_recoveryT)
-        if not (2 <= vvir_recoveryT <= 16):
+        if (2 <= vvir_recoveryT <= 16) and (vvir_recoveryT %1 !=0):
             # the input is out of range
+            out_of_range = True
+        elif not (2 <= vvir_recoveryT <= 16):
             out_of_range = True
     except ValueError:
         # the input is not a number
@@ -1097,6 +1187,7 @@ def refresh():
 def check():
     messagebox.showinfo("Success", "The pacemaker has been the same")
 
+
 ###################################login page##########################################
 login_page = customtkinter.CTkFrame(master=root)
 login_page.pack(pady=20, padx=60, fill="both", expand=True)
@@ -1171,11 +1262,14 @@ VVIR_button = customtkinter.CTkButton(master=mode_page, text="VVIR", command=VVI
 VVIR_button.pack(pady=12,padx=10)
 #back to login page from mode page
 log_out = customtkinter.CTkButton(master=mode_page, text="Log out", command=user_log_out)
-log_out.pack(pady=20, padx=10)
+log_out.pack(pady=12, padx=10)
 #check if the device is different than the previous one
 check_device = customtkinter.CTkButton(master=mode_page, text="Check device", command=check)
-check_device.pack(pady=20, padx=10)
-
+check_device.pack(pady=12, padx=10)
+A_button = customtkinter.CTkButton(master=mode_page, text="Atrial Button")
+A_button.pack(pady=12,padx=10)
+V_button = customtkinter.CTkButton(master=mode_page, text="Ventricular Button")
+V_button.pack(pady=12,padx=10)
 
 
 
@@ -1198,7 +1292,7 @@ AOO_label_URL.pack(pady=6, padx=10)
 AOO_URL = customtkinter.CTkEntry(master=AOO_page, placeholder_text="Upper Rate Limit")
 AOO_URL.pack(pady=6, padx=10)
 # Atrial Amplitude
-AOO_label_AA = customtkinter.CTkLabel(master=AOO_page, text="Atrial Amplitude (range: off, 0.1-5.0)")
+AOO_label_AA = customtkinter.CTkLabel(master=AOO_page, text="Atrial Amplitude (range: 0-100)")
 AOO_label_AA.pack(pady=6, padx=10)
 AOO_AA = customtkinter.CTkEntry(master=AOO_page, placeholder_text="Atrial Amplitude")
 AOO_AA.pack(pady=6, padx=10)
@@ -1241,7 +1335,7 @@ VOO_label_URL.pack(pady=6, padx=10)
 VOO_URL = customtkinter.CTkEntry(master=VOO_page, placeholder_text="Upper Rate Limit")
 VOO_URL.pack(pady=6, padx=10)
 # Ventricular Amplitude
-VOO_label_VA = customtkinter.CTkLabel(master=VOO_page, text="Ventricular Amplitude (range: off, 0.1-5.0)")
+VOO_label_VA = customtkinter.CTkLabel(master=VOO_page, text="Ventricular Amplitude (range: 0-100)")
 VOO_label_VA.pack(pady=6, padx=10)
 VOO_VA = customtkinter.CTkEntry(master=VOO_page, placeholder_text="Ventricular Amplitude")
 VOO_VA.pack(pady=6, padx=10)
@@ -1282,7 +1376,7 @@ AAI_label_URL.pack(pady=2, padx=10)
 AAI_URL = customtkinter.CTkEntry(master=AAI_page, placeholder_text="Upper Rate Limit")
 AAI_URL.pack(pady=2, padx=10)
 # Atrial Amplitude
-AAI_label_AA = customtkinter.CTkLabel(master=AAI_page, text="Atrial Amplitude (range: off, 0.1-5.0)")
+AAI_label_AA = customtkinter.CTkLabel(master=AAI_page, text="Atrial Amplitude (range: 0-100)")
 AAI_label_AA.pack(pady=2, padx=10)
 AAI_AA = customtkinter.CTkEntry(master=AAI_page, placeholder_text="Atrial Amplitude")
 AAI_AA.pack(pady=2, padx=10)
@@ -1345,7 +1439,7 @@ VVI_label_URL.pack(pady=2, padx=10)
 VVI_URL = customtkinter.CTkEntry(master=VVI_page, placeholder_text="Upper Rate Limit")
 VVI_URL.pack(pady=2, padx=10)
 # Ventricular Amplitude
-VVI_label_VA = customtkinter.CTkLabel(master=VVI_page, text="Ventricular Amplitude (range: off, 0.1-5.0)")
+VVI_label_VA = customtkinter.CTkLabel(master=VVI_page, text="Ventricular Amplitude (range: 0-100)")
 VVI_label_VA.pack(pady=2, padx=10)
 VVI_VA = customtkinter.CTkEntry(master=VVI_page, placeholder_text="Ventricular Amplitude")
 VVI_VA.pack(pady=2, padx=10)
@@ -1365,7 +1459,7 @@ VVI_label_VS.pack(pady=2, padx=10)
 VVI_VS = customtkinter.CTkEntry(master=VVI_page, placeholder_text="Ventricular Sensitivity")
 VVI_VS.pack(pady=2, padx=10)
 # Hysteresis
-VVI_label_H = customtkinter.CTkLabel(master=VVI_page, text="Hysteresis Rate Limit (range: OFF, 30-175)")
+VVI_label_H = customtkinter.CTkLabel(master=VVI_page, text="Hysteresis Rate Limit (range: 0 or same as LRL)")
 VVI_label_H.pack(pady=2, padx=10)
 VVI_H = customtkinter.CTkEntry(master=VVI_page, placeholder_text="Hysteresis Rate Limit")
 VVI_H.pack(pady=2, padx=10)
@@ -1406,7 +1500,7 @@ AOOR_label_MSR.pack(pady=1, padx=10)
 AOOR_MSR = customtkinter.CTkEntry(master=AOOR_page, placeholder_text="Maximum Sensor Rate")
 AOOR_MSR.pack(pady=1, padx=10)
 # Atrial Amplitude
-AOOR_label_AA = customtkinter.CTkLabel(master=AOOR_page, text="Atrial Amplitude (range: off, 0.1-5.0)")
+AOOR_label_AA = customtkinter.CTkLabel(master=AOOR_page, text="Atrial Amplitude (range: 0-100)")
 AOOR_label_AA.pack(pady=1, padx=10)
 AOOR_AA = customtkinter.CTkEntry(master=AOOR_page, placeholder_text="Atrial Amplitude")
 AOOR_AA.pack(pady=1, padx=10)
@@ -1450,7 +1544,7 @@ log_out.pack(pady=6, padx=10)
 VOOR_page = customtkinter.CTkFrame(master=root)
 VOOR_page.pack(pady=11, padx=60)#, fill="both", expand = True)
 # output a label
-VOOR_label = customtkinter.CTkLabel(master=VOOR_page, text="Please Enter Parameters for VOO")
+VOOR_label = customtkinter.CTkLabel(master=VOOR_page, text="Please Enter Parameters for VOOR")
 VOOR_label.pack(pady=1, padx=10)
 # Lower Rate Limit
 VOOR_label_LRL = customtkinter.CTkLabel(master=VOOR_page, text="Lower Rate Limit (range: 30-175)")
@@ -1463,7 +1557,7 @@ VOOR_label_URL.pack(pady=1, padx=10)
 VOOR_URL = customtkinter.CTkEntry(master=VOOR_page, placeholder_text="Upper Rate Limit")
 VOOR_URL.pack(pady=1, padx=10)
 # Ventricular Amplitude
-VOOR_label_VA = customtkinter.CTkLabel(master=VOOR_page, text="Ventricular Amplitude (range: off, 0.1-5.0)")
+VOOR_label_VA = customtkinter.CTkLabel(master=VOOR_page, text="Ventricular Amplitude (range: 0-100)")
 VOOR_label_VA.pack(pady=1, padx=10)
 VOOR_VA = customtkinter.CTkEntry(master=VOOR_page, placeholder_text="Ventricular Amplitude")
 VOOR_VA.pack(pady=1, padx=10)
@@ -1676,5 +1770,7 @@ back_VVIR_button.grid(row=15, column=0, ipadx=10, ipady=10)
 log_out = customtkinter.CTkButton(master=VVIR_page, text="Log out", command=user_log_out)
 log_out.grid(row=16, column=0, ipadx=10, ipady=10)
 
+float_value = 0.99
+customtkinter.set_widget_scaling(float_value)
 show_login_page()
 root.mainloop()
