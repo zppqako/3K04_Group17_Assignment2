@@ -404,6 +404,10 @@ def submit_aai():
             file.write(f"atrial amplitude:{aai_aa} \n")
             file.write(f"atrial pulse width:{aai_apw} \n")
             file.write(f"atrial refactory period:{aai_arp} \n")
+            file.write(f"atrial sensitivity:{aai_as} \n")
+            file.write(f"PVARP:{aai_pvarp} \n")
+            file.write(f"Hysteresis:{aai_h} \n")
+            file.write(f"Rate smoothing:{aai_rs} \n")
         if refresh() == 1:
             messagebox.showinfo("Success", "Successfully submit!")
 
@@ -524,6 +528,9 @@ def submit_vvi():
             file.write(f"ventricular amplitude:{vvi_va} \n")
             file.write(f"ventricular pulse width:{vvi_vpw} \n")
             file.write(f"ventricular refactory period:{vvi_vrp} \n")
+            file.write(f"ventricular sensitivity:{vvi_vs} \n")
+            file.write(f"hysteresis:{vvi_h} \n")
+            file.write(f"rate smoothing:{vvi_rs} \n")
         if refresh() == 1:
             messagebox.showinfo("Success", "Successfully submit!")
 
@@ -651,6 +658,13 @@ def submit_aoor():
             file.write(f"upper limit rate:{aoor_url} \n")
             file.write(f"atrial amplitude:{aoor_aa} \n")
             file.write(f"atrial pulse width:{aoor_apw} \n")
+
+            file.write(f"maximum sensor rate:{aoor_msr} \n")
+            file.write(f"activity threshold:{aoor_at} \n")
+            file.write(f"reaction time:{aoor_reactionT} \n")
+            file.write(f"response factor:{aoor_rf} \n")
+            file.write(f"recovery time:{aoor_recoveryT} \n")
+
         if refresh() == 1:
             messagebox.showinfo("Success", "Successfully submit!")
 
@@ -777,6 +791,12 @@ def submit_voor():
             file.write(f"upper limit rate:{voor_lrl} \n")
             file.write(f"ventricular amplitude:{voor_va} \n")
             file.write(f"ventricular pulse width:{voor_vpw} \n")
+
+            file.write(f"maximum sensor rate:{voor_msr} \n")
+            file.write(f"activity threshold:{voor_at} \n")
+            file.write(f"reaction time:{voor_reactionT} \n")
+            file.write(f"response factor:{voor_rf} \n")
+            file.write(f"recovery time:{voor_recoveryT} \n")
         if refresh() == 1:
             messagebox.showinfo("Success", "Successfully submit!")
 
@@ -959,6 +979,16 @@ def submit_aair():
             file.write(f"atrial amplitude:{aair_aa} \n")
             file.write(f"atrial pulse width:{aair_apw} \n")
             file.write(f"atrial refactory period:{aair_arp} \n")
+            file.write(f"atrial sensitivity:{aair_as} \n")
+            file.write(f"PVARP:{aair_pvarp} \n")
+            file.write(f"Hysteresis:{aair_h} \n")
+            file.write(f"Rate smoothing:{aair_rs} \n")
+
+            file.write(f"maximum sensor rate:{aair_msr} \n")
+            file.write(f"activity threshold:{aair_at} \n")
+            file.write(f"reaction time:{aair_reactionT} \n")
+            file.write(f"response factor:{aair_rf} \n")
+            file.write(f"recovery time:{aair_recoveryT} \n")
         if refresh() == 1:
             messagebox.showinfo("Success", "Successfully submit!")
 
@@ -1132,6 +1162,15 @@ def submit_vvir():
             file.write(f"ventricular amplitude:{vvir_va} \n")
             file.write(f"ventricular pulse width:{vvir_vpw} \n")
             file.write(f"ventricular refactory period:{vvir_vrp} \n")
+            file.write(f"ventricular sensitivity:{vvir_vs} \n")
+            file.write(f"hysteresis:{vvir_h} \n")
+            file.write(f"rate smoothing:{vvvir_rs} \n")
+
+            file.write(f"maximum sensor rate:{vvir_msr} \n")
+            file.write(f"activity threshold:{vvir_at} \n")
+            file.write(f"reaction time:{vvir_reactionT} \n")
+            file.write(f"response factor:{vvir_rf} \n")
+            file.write(f"recovery time:{vvir_recoveryT} \n")
         if refresh() == 1:
             messagebox.showinfo("Success", "Successfully submit!")
 
