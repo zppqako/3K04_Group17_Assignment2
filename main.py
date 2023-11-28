@@ -10,6 +10,16 @@ import struct
 from serial import Serial
 # from DCM_serial import test
 
+import customtkinter
+import hashlib
+import serial
+#import serial.tools.list_ports
+from tkinter import messagebox
+import time
+import threading
+import tkinter as tk
+#import usb.core
+
 customtkinter.set_appearance_mode("dark")
 customtkinter.set_default_color_theme("dark-blue")
 
@@ -29,11 +39,14 @@ def show_login_page():
     VOO_page.pack_forget()
     AAI_page.pack_forget()
     VVI_page.pack_forget()
+    AOOR_page.pack_forget()
+    VOOR_page.pack_forget()
+    AAIR_page.pack_forget()
+    VVIR_page.pack_forget()
     login_page.pack()
 
 def save_users():
-
-    with open("users.txt", 'w') as file:
+    with open("users.txt", 'a+') as file:
         for username, password in users.items():
             file.write(f"{username}:{password}\n")
 
@@ -72,15 +85,18 @@ def confirm():
     if len(username) == 0 or len(password) == 0:
         messagebox.showerror('Error', 'Username or password cannot be empty.')
         register_page.pack()
-        return
-    if username in users:
+       # return
+    elif username in users:
         messagebox.showerror('Error', 'Username already exists.')
         register_page.pack()
-        return
-
-    hashed_password = hashlib.sha256(password.encode()).hexdigest()
-    users[username] = hashed_password
-    save_users()
+      #  return
+    elif ' ' in username or ' ' in password:
+        messagebox.showerror('Error', 'Username or password cannot contain space.')
+        register_page.pack()
+    else:
+        hashed_password = hashlib.sha256(password.encode()).hexdigest()
+        users[username] = hashed_password
+        save_users()
     new_username.delete(0, 'end')
     new_password.delete(0, 'end')
     register_page.pack_forget()
@@ -96,6 +112,7 @@ def register():
     register_page.pack()
 
 def login():
+    load_users()
     username = login_username.get()
     password = login_password.get()
     if len(username) == 0 or len(password) == 0:
@@ -119,36 +136,10 @@ def login():
         login_password.delete(0, 'end')
         login_page.pack()
 
-def clear_entry():
-    return 0
-    # AOO_LRL.delete(0,'123')
-    # AOO_URL.delete(0,'end')
-    # AOO_AA.delete(0,'end')
-    # AOO_APW.delete(0,'end')
-    #
-    # VOO_LRL.delete(0,'end')
-    # VOO_URL.delete(0,'end')
-    # VOO_VA.delete(0,'end')
-    # VOO_VPW.delete(0,'end')
-    #
-    # AAI_LRL.delete(0,'end')
-    # AAI_URL.delete(0,'end')
-    # AAI_AA.delete(0,'end')
-    # AAI_APW.delete(0,'end')
-    # AAI_ARP.delete(0,'end')
-    #
-    # VVI_LRL.delete(0,'end')
-    # VVI_URL.delete(0,'end')
-    # VVI_VA.delete(0,'end')
-    # VVI_VPW.delete(0,'end')
-    # VVI_VRP.delete(0,'end')
-
-
 def user_log_out():
     login_username.delete(0, 'end')
     login_password.delete(0, 'end')
     show_login_page()
-    clear_entry()
 def back_r():
     show_login_page()
     new_username.delete(0,'end')
@@ -160,7 +151,11 @@ def back_button():
     VOO_page.pack_forget()
     AAI_page.pack_forget()
     VVI_page.pack_forget()
-    clear_entry()
+    AOOR_page.pack_forget()
+    VOOR_page.pack_forget()
+    AAIR_page.pack_forget()
+    VVIR_page.pack_forget()
+#    clear_entry()
     mode_page.pack()
 
 def submit_aoo():
@@ -200,7 +195,7 @@ def submit_aoo():
     else:
         try:
             aoo_aa = float(aoo_aa)
-            if not ((0.5 <= aoo_aa <= 3.2) or (3.5 <= aoo_aa <= 7)):
+            if not (0.1 <= aoo_aa <= 5.0):
                 # the input is out of range
                 out_of_range = True
         except ValueError:
@@ -209,14 +204,14 @@ def submit_aoo():
     # Verify the atrial pulse width
     try:
         aoo_apw = float(aoo_apw)
-        if not (aoo_apw == 0.05 or (0.1 <= aoo_apw <= 1.9)):
+        if not (1 <= aoo_apw <= 30):
             # the input is out of range
             out_of_range = True
     except ValueError:
         # the input is not a number
         invalid_input = True
     if invalid_input:
-        messagebox.showerror("Erro", "Please entry a valid parameter")
+        messagebox.showerror("Error", "Please entry a valid parameter")
     elif out_of_range:
         messagebox.showerror("Error", "Input parameter is out of range")
     else:
@@ -226,7 +221,7 @@ def submit_aoo():
             file.write(f"atrial amplitude:{aoo_aa} \n")
             file.write(f"atrial pulse width:{aoo_apw} \n")
         if refresh() == 1:
-            messagebox.showinfo("Success", "Successfully submitted!")
+            messagebox.showinfo("Success", "Successfully submit!")
 
 def submit_voo():
     valid = True
@@ -264,7 +259,7 @@ def submit_voo():
     else:
         try:
             voo_va = float(voo_va)
-            if not ((0.5 <= voo_va <= 3.2) or (3.5 <= voo_va <= 7)):
+            if not (0.1 <= voo_va <= 5.0):
                 # the input is out of range
                 out_of_range = True
         except ValueError:
@@ -273,14 +268,14 @@ def submit_voo():
     # Verify the ventricular pulse width
     try:
         voo_vpw = float(voo_vpw)
-        if not (voo_vpw == 0.05 or (0.1 <= voo_vpw <= 1.9)):
+        if not (1 <= voo_vpw <= 30):
             # the input is out of range
             out_of_range = True
     except ValueError:
         # the input is not a number
         invalid_input = True
     if invalid_input:
-        messagebox.showerror("Erro", "Please entry a valid parameter")
+        messagebox.showerror("Error", "Please entry a valid parameter")
     elif out_of_range:
         messagebox.showerror("Error", "Input parameter is out of range")
     else:
@@ -303,7 +298,10 @@ def submit_aai():
     aai_aa = AAI_AA.get()
     aai_apw = AAI_APW.get()
     aai_arp = AAI_ARP.get()
-
+    aai_as = AAI_AS.get()
+    aai_pvarp = AAI_PVARP.get()
+    aai_h = AAI_H.get()
+    aai_rs = AAI_RS.get()
     # Verify the lower rate limit parameter
     try:
         aai_lrl = float(aai_lrl)
@@ -330,7 +328,7 @@ def submit_aai():
     else:
         try:
             aai_aa = float(aai_aa)
-            if not ((0.5 <= aai_aa <= 3.2) or (3.5 <= aai_aa <= 7)):
+            if not (0.1 <= aai_aa <= 5.0):
                 # the input is out of range
                 out_of_range = True
         except ValueError:
@@ -339,7 +337,7 @@ def submit_aai():
     # Verify the atrial pulse width
     try:
         aai_apw = float(aai_apw)
-        if not (aai_apw == 0.05 or (0.1 <= aai_apw <= 1.9)):
+        if not (1 <= aai_apw <= 30):
             # the input is out of range
             out_of_range = True
     except ValueError:
@@ -353,18 +351,56 @@ def submit_aai():
     except ValueError:
         # the input is not a number
         invalid_input = True
+    #Verify the atrial sensitivity
+    try:
+        aai_as = float(aai_as)
+        if not(0 <=aai_as<= 5):
+            out_of_range = True
+    except ValueError:
+        invalid_input = True
+    #Verify the PVARP
+    try:
+        aai_pvarp = float(aai_pvarp)
+        if not(150<= aai_pvarp <=500 ):
+            out_of_range = True
+    except ValueError:
+        invalid_input = True
+    # Verify the Hysteresis
+    if aai_h == 'off':
+        # the input can be "off"
+        pass
+    else:
+        try:
+            aai_h = float(aai_h)
+            if not (((30<=aai_lrl<=50)and(30<=aai_h<=50)) or ((50<=aai_lrl<=90)and(50<=aai_h<=90)) or ((90<=aai_lrl<=175)and(90<=aai_h<=175))):
+                # the input is out of range
+                out_of_range = True
+        except ValueError:
+            # the input is neither a number nor "off"
+            invalid_input = True
+    #Verify the Rate Smoothing
+    if aai_rs == 'off':
+        pass
+    else:
+        try:
+            aai_rs = float(aai_rs)
+            if not(aai_rs == 3.0 or aai_rs == 6.0 or aai_rs == 9.0 or aai_rs == 12.0 or aai_rs == 15.0 or aai_rs == 18.0 or aai_rs == 21.0 or aai_rs == 25.0):
+                out_of_range = True
+        except ValueError:
+            invalid_input = True
 
     if invalid_input:
-        messagebox.showerror("Erro", "Please entry a valid parameter")
+        messagebox.showerror("Error", "Please entry a valid parameter")
     elif out_of_range:
         messagebox.showerror("Error", "Input parameter is out of range")
-    elif refresh() == 1:
+    else:
         with open('user_inputs.txt','w') as file:
             file.write(f"lower limit rate:{aai_lrl} \n")
             file.write(f"upper limit rate:{aai_url} \n")
             file.write(f"atrial amplitude:{aai_aa} \n")
             file.write(f"atrial pulse width:{aai_apw} \n")
             file.write(f"atrial refactory period:{aai_arp} \n")
+        if refresh() == 1:
             messagebox.showinfo("Success", "Successfully submit!")
 
 def submit_vvi():
@@ -378,7 +414,9 @@ def submit_vvi():
     vvi_va = VVI_VA.get()
     vvi_vpw = VVI_VPW.get()
     vvi_vrp = VVI_VRP.get()
-
+    vvi_vs = VVI_VS.get()
+    vvi_h = VVI_H.get()
+    vvi_rs = VVI_RS.get()
     # Verify the lower rate limit parameter
     try:
         vvi_lrl = float(vvi_lrl)
@@ -405,7 +443,7 @@ def submit_vvi():
     else:
         try:
             vvi_va = float(vvi_va)
-            if not ((0.5 <= vvi_va <= 3.2) or (3.5 <= vvi_va <= 7)):
+            if not (0.1 <= vvi_va <= 5.0):
                 # the input is out of range
                 out_of_range = True
         except ValueError:
@@ -414,7 +452,7 @@ def submit_vvi():
     # Verify the atrial pulse width
     try:
         vvi_vpw = float(vvi_vpw)
-        if not (vvi_vpw == 0.05 or (0.1 <= vvi_vpw <= 1.9)):
+        if not (1 <= vvi_vpw <= 30):
             # the input is out of range
             out_of_range = True
     except ValueError:
@@ -428,9 +466,39 @@ def submit_vvi():
     except ValueError:
         # the input is not a number
         invalid_input = True
+    #Verify the ventricular sensitivity
+    try:
+        vvi_vs = float(vvi_vs)
+        if not(0<=vvi_vs<=5):
+            out_of_range = True
+    except ValueError:
+        invalid_input = True
+    # Verify the Hysteresis
+    if vvi_h == 'off':
+        # the input can be "off"
+        pass
+    else:
+        try:
+            vvi_h = float(vvi_h)
+            if not (((30<=vvi_lrl<=50)and(30<=vvi_h<=50)) or ((50<=vvi_lrl<=90)and(50<=vvi_h<=90)) or ((90<=vvi_lrl<=175)and(90<=vvi_h<=175))):
+                # the input is out of range
+                out_of_range = True
+        except ValueError:
+            # the input is neither a number nor "off"
+            invalid_input = True
+    #Verify the Rate Smoothing
+    if vvi_rs == 'off':
+        pass
+    else:
+        try:
+            vvi_rs = float(vvi_rs)
+            if not(vvi_rs == 3.0 or vvi_rs == 6.0 or vvi_rs == 9.0 or vvi_rs == 12.0 or vvi_rs == 15.0 or vvi_rs == 18.0 or vvi_rs == 21.0 or vvi_rs == 25.0):
+                out_of_range = True
+        except ValueError:
+            invalid_input = True
 
     if invalid_input:
-        messagebox.showerror("Erro", "Please entry a valid parameter")
+        messagebox.showerror("Error", "Please entry a valid parameter")
     elif out_of_range:
         messagebox.showerror("Error", "Input parameter is out of range")
     else:
@@ -442,6 +510,540 @@ def submit_vvi():
             file.write(f"ventricular refactory period:{vvi_vrp} \n")
         if refresh() == 1:
             messagebox.showinfo("Success", "Successfully submit!")
+
+def submit_aoor():
+    valid = True
+    invalid_input = False
+    out_of_range = False
+
+    # get user input
+    aoor_lrl = AOOR_LRL.get()
+    aoor_url = AOOR_URL.get()
+    aoor_aa = AOOR_AA.get()
+    aoor_apw = AOOR_APW.get()
+    aoor_msr = AOOR_MSR.get()
+    aoor_at = AOOR_AT.get()
+    aoor_reactionT = AOOR_ReactionT.get()
+    aoor_rf = AOOR_RF.get()
+    aoor_recoveryT = AOOR_RecoveryT.get()
+
+    # Verify the lower rate limit parameter
+    try:
+        aoor_lrl = float(aoor_lrl)
+        if not (30 <= aoor_lrl <= 175):
+            # the input is out of range
+            out_of_range = True
+    except ValueError:
+        # the input is not a number
+        invalid_input = True
+    # Verify the upper rate limit parameter
+    try:
+        aoor_url = float(aoor_url)
+        if not (50 <= aoor_url <= 175):
+            # the input is out of range
+            out_of_range = True
+    except ValueError:
+        # the input is not a number
+        invalid_input = True
+
+    # Verify the atrial amplitude
+    if aoor_aa == 'off':
+        # the input can be "off"
+        pass
+    else:
+        try:
+            aoor_aa = float(aoor_aa)
+            if not (0.1 <= aoor_aa <= 5.0):
+                # the input is out of range
+                out_of_range = True
+        except ValueError:
+            # the input is neither a number nor "off"
+            invalid_input = True
+    # Verify the atrial pulse width
+    try:
+        aoor_apw = float(aoor_apw)
+        if not (1 <= aoor_apw <= 30):
+            # the input is out of range
+            out_of_range = True
+    except ValueError:
+        # the input is not a number
+        invalid_input = True
+
+    # Verify the Maximum Sensor Rate
+    try:
+        aoor_msr = float(aoor_msr)
+        if not (50 <= aoor_msr <= 175):
+            # the input is out of range
+            out_of_range = True
+    except ValueError:
+        # the input is not a number
+        invalid_input = True
+
+    # Verify the Reaction Time
+    try:
+        aoor_reactionT = float(aoor_reactionT)
+        if not (10 <= aoor_reactionT <= 50):
+            # the input is out of range
+            out_of_range = True
+    except ValueError:
+        # the input is not a number
+        invalid_input = True
+    # Verify the Response Factor
+    try:
+        aoor_rf= float(aoor_rf)
+        if not (1 <= aoor_rf <= 16):
+            # the input is out of range
+            out_of_range = True
+    except ValueError:
+        # the input is not a number
+        invalid_input = True
+    # Verify the Recovery Time
+    try:
+        aoor_recoveryT= float(aoor_recoveryT)
+        if not (2 <= aoor_recoveryT <= 16):
+            # the input is out of range
+            out_of_range = True
+    except ValueError:
+        # the input is not a number
+        invalid_input = True
+    # Verify the Recovery Time
+    if aoor_at not in ["V-Low","Low","Med-Low","Med","Med-High","High","V-high"]:
+        invalid_input = True
+    if invalid_input:
+        messagebox.showerror("Error", "Please entry a valid parameter")
+    elif out_of_range:
+        messagebox.showerror("Error", "Input parameter is out of range")
+    else:
+        with open('user_inputs.txt','w') as file:
+            file.write(f"lower limit rate:{aoor_lrl} \n")
+            file.write(f"upper limit rate:{aoor_url} \n")
+            file.write(f"atrial amplitude:{aoor_aa} \n")
+            file.write(f"atrial pulse width:{aoor_apw} \n")
+        if refresh() == 1:
+            messagebox.showinfo("Success", "Successfully submit!")
+
+def submit_voor():
+    valid = True
+    invalid_input = False
+    out_of_range = False
+
+    # get user input
+    voor_lrl = VOOR_LRL.get()
+    voor_url = VOOR_URL.get()
+    voor_va = VOOR_VA.get()
+    voor_vpw = VOOR_VPW.get()
+    voor_msr = VOOR_MSR.get()
+    voor_at = VOOR_AT.get()
+    voor_reactionT = VOOR_ReactionT.get()
+    voor_rf = VOOR_RF.get()
+    voor_recoveryT = VOOR_RecoveryT.get()
+
+    # Verify the lower rate limit parameter
+    try:
+        voor_lrl = float(voor_lrl)
+        if not (30 <= voor_lrl <= 175):
+            # the input is out of range
+            out_of_range = True
+    except ValueError:
+        # the input is not a number
+        invalid_input = True
+    # Verify the upper rate limit parameter
+    try:
+        voor_url = float(voor_url)
+        if not (50 <= voor_url <= 175):
+            # the input is out of range
+            out_of_range = True
+    except ValueError:
+        # the input is not a number
+        invalid_input = True
+    # Verify the ventricular amplitude
+    if voor_va == 'off':
+        # the input can be "off"
+        pass
+    else:
+        try:
+            voor_va = float(voor_va)
+            if not (0.1 <= voor_va <= 5.0):
+                # the input is out of range
+                out_of_range = True
+        except ValueError:
+            # the input is neither a number nor "off"
+            invalid_input = True
+    # Verify the ventricular pulse width
+    try:
+        voor_vpw = float(voor_vpw)
+        if not (1 <= voor_vpw <= 30):
+            # the input is out of range
+            out_of_range = True
+    except ValueError:
+        # the input is not a number
+        invalid_input = True
+    # Verify the Maximum Sensor Rate
+    try:
+        voor_msr = float(voor_msr)
+        if not (50 <= voor_msr <= 175):
+            # the input is out of range
+            out_of_range = True
+    except ValueError:
+        # the input is not a number
+        invalid_input = True
+
+    # Verify the Reaction Time
+    try:
+        voor_reactionT = float(voor_reactionT)
+        if not (10 <= voor_reactionT <= 50):
+            # the input is out of range
+            out_of_range = True
+    except ValueError:
+        # the input is not a number
+        invalid_input = True
+    # Verify the Response Factor
+    try:
+        voor_rf= float(voor_rf)
+        if not (1 <= voor_rf <= 16):
+            # the input is out of range
+            out_of_range = True
+    except ValueError:
+        # the input is not a number
+        invalid_input = True
+    # Verify the Recovery Time
+    try:
+        voor_recoveryT= float(voor_recoveryT)
+        if not (2 <= voor_recoveryT <= 16):
+            # the input is out of range
+            out_of_range = True
+    except ValueError:
+        # the input is not a number
+        invalid_input = True
+    # Verify the Recovery Time
+    if voor_at not in ["V-Low","Low","Med-Low","Med","Med-High","High","V-high"]:
+        invalid_input = True
+    if invalid_input:
+        messagebox.showerror("Error", "Please entry a valid parameter")
+    elif out_of_range:
+        messagebox.showerror("Error", "Input parameter is out of range")
+    else:
+        with open('user_inputs.txt','w') as file:
+            file.write(f"lower limit rate:{voor_lrl} \n")
+            file.write(f"upper limit rate:{voor_lrl} \n")
+            file.write(f"ventricular amplitude:{voor_va} \n")
+            file.write(f"ventricular pulse width:{voor_vpw} \n")
+        if refresh() == 1:
+            messagebox.showinfo("Success", "Successfully submit!")
+
+def submit_aair():
+    valid = True
+    invalid_input = False
+    out_of_range = False
+
+    # get user input
+    aair_lrl = AAIR_LRL.get()
+    aair_url = AAIR_URL.get()
+    aair_aa = AAIR_AA.get()
+    aair_apw = AAIR_APW.get()
+    aair_arp = AAIR_ARP.get()
+    aair_as = AAIR_AS.get()
+    aair_pvarp = AAIR_PVARP.get()
+    aair_h = AAIR_H.get()
+    aair_rs = AAIR_RS.get()
+    aair_msr = AAIR_MSR.get()
+    aair_at = AAIR_AT.get()
+    aair_reactionT = AAIR_ReactionT.get()
+    aair_rf = AAIR_RF.get()
+    aair_recoveryT = AAIR_RecoveryT.get()
+    # Verify the lower rate limit parameter
+    try:
+        aair_lrl = float(aair_lrl)
+        if not (30 <= aair_lrl <= 175):
+            # the input is out of range
+            out_of_range = True
+    except ValueError:
+        # the input is not a number
+        invalid_input = True
+    # Verify the upper rate limit parameter
+    try:
+        aair_url = float(aair_url)
+        if not (50 <= aair_url <= 175):
+            # the input is out of range
+            out_of_range = True
+    except ValueError:
+        # the input is not a number
+        invalid_input = True
+
+    # Verify the atrial amplitude
+    if aair_aa == 'off':
+        # the input can be "off"
+        pass
+    else:
+        try:
+            aair_aa = float(aair_aa)
+            if not (0.1 <= aair_aa <= 5.0):
+                # the input is out of range
+                out_of_range = True
+        except ValueError:
+            # the input is neither a number nor "off"
+            invalid_input = True
+    # Verify the atrial pulse width
+    try:
+        aair_apw = float(aair_apw)
+        if not (1 <= aair_apw <= 30):
+            # the input is out of range
+            out_of_range = True
+    except ValueError:
+        # the input is not a number
+        invalid_input = True
+    try:
+        aair_arp = float(aair_arp)
+        if not(150 <= aair_arp <= 500):
+            # the input is out of range
+            out_of_range = True
+    except ValueError:
+        # the input is not a number
+        invalid_input = True
+    #Verify the atrial sensitivity
+    try:
+        aair_as = float(aair_as)
+        if not(0 <=aair_as<= 5):
+            out_of_range = True
+    except ValueError:
+        invalid_input = True
+    #Verify the PVARP
+    try:
+        aair_pvarp = float(aair_pvarp)
+        if not(150<= aair_pvarp <=500 ):
+            out_of_range = True
+    except ValueError:
+        invalid_input = True
+    # Verify the Hysteresis
+    if aair_h == 'off':
+        # the input can be "off"
+        pass
+    else:
+        try:
+            aair_h = float(aair_h)
+            if not (((30<=aair_lrl<=50)and(30<=aair_h<=50)) or ((50<=aair_lrl<=90)and(50<=aair_h<=90)) or ((90<=aair_lrl<=175)and(90<=aair_h<=175))):
+                # the input is out of range
+                out_of_range = True
+        except ValueError:
+            # the input is neither a number nor "off"
+            invalid_input = True
+    #Verify the Rate Smoothing
+    if aair_rs == 'off':
+        pass
+    else:
+        try:
+            aair_rs = float(aair_rs)
+            if not(aair_rs == 3.0 or aair_rs == 6.0 or aair_rs == 9.0 or aair_rs == 12.0 or aair_rs == 15.0 or aair_rs == 18.0 or aair_rs == 21.0 or aair_rs == 25.0):
+                out_of_range = True
+        except ValueError:
+            invalid_input = True
+    # Verify the Maximum Sensor Rate
+    try:
+        aair_msr = float(aair_msr)
+        if not (50 <= aair_msr <= 175):
+            # the input is out of range
+            out_of_range = True
+    except ValueError:
+        # the input is not a number
+        invalid_input = True
+
+    # Verify the Reaction Time
+    try:
+        aair_reactionT = float(aair_reactionT)
+        if not (10 <= aair_reactionT <= 50):
+            # the input is out of range
+            out_of_range = True
+    except ValueError:
+        # the input is not a number
+        invalid_input = True
+    # Verify the Response Factor
+    try:
+        aair_rf= float(aair_rf)
+        if not (1 <= aair_rf <= 16):
+            # the input is out of range
+            out_of_range = True
+    except ValueError:
+        # the input is not a number
+        invalid_input = True
+    # Verify the Recovery Time
+    try:
+        aair_recoveryT= float(aair_recoveryT)
+        if not (2 <= aair_recoveryT <= 16):
+            # the input is out of range
+            out_of_range = True
+    except ValueError:
+        # the input is not a number
+        invalid_input = True
+    # Verify the Recovery Time
+    if aair_at not in ["V-Low","Low","Med-Low","Med","Med-High","High","V-high"]:
+        invalid_input = True
+    if invalid_input:
+        messagebox.showerror("Error", "Please entry a valid parameter")
+    elif out_of_range:
+        messagebox.showerror("Error", "Input parameter is out of range")
+    else:
+        with open('user_inputs.txt','w') as file:
+            file.write(f"lower limit rate:{aair_lrl} \n")
+            file.write(f"upper limit rate:{aair_url} \n")
+            file.write(f"atrial amplitude:{aair_aa} \n")
+            file.write(f"atrial pulse width:{aair_apw} \n")
+            file.write(f"atrial refactory period:{aair_arp} \n")
+        if refresh() == 1:
+            messagebox.showinfo("Success", "Successfully submit!")
+
+def submit_vvir():
+    valid = True
+    invalid_input = False
+    out_of_range = False
+
+    # get user input
+    vvir_lrl = VVIR_LRL.get()
+    vvir_url = VVIR_URL.get()
+    vvir_va = VVIR_VA.get()
+    vvir_vpw = VVIR_VPW.get()
+    vvir_vrp = VVIR_VRP.get()
+    vvir_vs = VVIR_VS.get()
+    vvir_h = VVIR_H.get()
+    vvir_rs = VVIR_RS.get()
+    vvir_msr = VVIR_MSR.get()
+    vvir_at = VVIR_AT.get()
+    vvir_reactionT = VVIR_ReactionT.get()
+    vvir_rf = VVIR_RF.get()
+    vvir_recoveryT = VVIR_RecoveryT.get()
+    # Verify the lower rate limit parameter
+    try:
+        vvir_lrl = float(vvir_lrl)
+        if not (30 <= vvir_lrl <= 175):
+            # the input is out of range
+            out_of_range = True
+    except ValueError:
+        # the input is not a number
+        invalid_input = True
+    # Verify the upper rate limit parameter
+    try:
+        vvir_url = float(vvir_url)
+        if not (50 <= vvir_url <= 175):
+            # the input is out of range
+            out_of_range = True
+    except ValueError:
+        # the input is not a number
+        invalid_input = True
+
+    # Verify the atrial amplitude
+    if vvir_va == 'off':
+        # the input can be "off"
+        pass
+    else:
+        try:
+            vvir_va = float(vvir_va)
+            if not (0.1 <= vvir_va <= 5.0):
+                # the input is out of range
+                out_of_range = True
+        except ValueError:
+            # the input is neither a number nor "off"
+            invalid_input = True
+    # Verify the atrial pulse width
+    try:
+        vvir_vpw = float(vvir_vpw)
+        if not (1 <= vvir_vpw <= 30):
+            # the input is out of range
+            out_of_range = True
+    except ValueError:
+        # the input is not a number
+        invalid_input = True
+    try:
+        vvir_vrp = float(vvir_vrp)
+        if not (150 <= vvir_vrp <= 500):
+            # the input is out of range
+            out_of_range = True
+    except ValueError:
+        # the input is not a number
+        invalid_input = True
+    #Verify the ventricular sensitivity
+    try:
+        vvir_vs = float(vvir_vs)
+        if not(0<=vvir_vs<=5):
+            out_of_range = True
+    except ValueError:
+        invalid_input = True
+    # Verify the Hysteresis
+    if vvir_h == 'off':
+        # the input can be "off"
+        pass
+    else:
+        try:
+            vvi_h = float(vvir_h)
+            if not (((30<=vvir_lrl<=50)and(30<=vvir_h<=50)) or ((50<=vvir_lrl<=90)and(50<=vvir_h<=90)) or ((90<=vvir_lrl<=175)and(90<=vvir_h<=175))):
+                # the input is out of range
+                out_of_range = True
+        except ValueError:
+            # the input is neither a number nor "off"
+            invalid_input = True
+    # Verify the Maximum Sensor Rate
+    try:
+        vvir_msr = float(vvir_msr)
+        if not (50 <= vvir_msr <= 175):
+            # the input is out of range
+            out_of_range = True
+    except ValueError:
+        # the input is not a number
+        invalid_input = True
+
+    # Verify the Reaction Time
+    try:
+        vvir_reactionT = float(vvir_reactionT)
+        if not (10 <= vvir_reactionT <= 50):
+            # the input is out of range
+            out_of_range = True
+    except ValueError:
+        # the input is not a number
+        invalid_input = True
+    # Verify the Response Factor
+    try:
+        vvir_rf= float(vvir_rf)
+        if not (1 <= vvir_rf <= 16):
+            # the input is out of range
+            out_of_range = True
+    except ValueError:
+        # the input is not a number
+        invalid_input = True
+    # Verify the Recovery Time
+    try:
+        vvir_recoveryT= float(vvir_recoveryT)
+        if not (2 <= vvir_recoveryT <= 16):
+            # the input is out of range
+            out_of_range = True
+    except ValueError:
+        # the input is not a number
+        invalid_input = True
+    # Verify the Recovery Time
+    if vvir_at not in ["V-Low","Low","Med-Low","Med","Med-High","High","V-high"]:
+        invalid_input = True
+    #Verify the Rate Smoothing
+    if vvir_rs == 'off':
+        pass
+    else:
+        try:
+            vvir_rs = float(vvir_rs)
+            if not(vvir_rs == 3.0 or vvir_rs == 6.0 or vvir_rs == 9.0 or vvir_rs == 12.0 or vvir_rs == 15.0 or vvir_rs == 18.0 or vvir_rs == 21.0 or vvir_rs == 25.0):
+                out_of_range = True
+        except ValueError:
+            invalid_input = True
+
+    if invalid_input:
+        messagebox.showerror("Error", "Please entry a valid parameter")
+    elif out_of_range:
+        messagebox.showerror("Error", "Input parameter is out of range")
+    else:
+        with open('user_inputs.txt','w') as file:
+            file.write(f"lower limit rate:{vvir_lrl} \n")
+            file.write(f"upper limit rate:{vvir_url} \n")
+            file.write(f"ventricular amplitude:{vvir_va} \n")
+            file.write(f"ventricular pulse width:{vvir_vpw} \n")
+            file.write(f"ventricular refactory period:{vvir_vrp} \n")
+        if refresh() == 1:
+            messagebox.showinfo("Success", "Successfully submit!")
+
 
 def AOO():
     login_page.pack_forget()
@@ -463,7 +1065,26 @@ def VVI():
     mode_page.pack_forget()
     register_page.forget()
     VVI_page.pack()
-
+def AOOR():
+    login_page.pack_forget()
+    mode_page.pack_forget()
+    register_page.forget()
+    AOOR_page.pack()
+def VOOR():
+    login_page.pack_forget()
+    mode_page.pack_forget()
+    register_page.forget()
+    VOOR_page.pack()
+def AAIR():
+    login_page.pack_forget()
+    mode_page.pack_forget()
+    register_page.forget()
+    AAIR_page.pack()
+def VVIR():
+    login_page.pack_forget()
+    mode_page.pack_forget()
+    register_page.forget()
+    VVIR_page.pack()
 def refresh():
     try:
         ser = serial.Serial('COM3', 9600, timeout=0)
@@ -476,7 +1097,7 @@ def refresh():
 def check():
     messagebox.showinfo("Success", "The pacemaker has been the same")
 
-# login page
+###################################login page##########################################
 login_page = customtkinter.CTkFrame(master=root)
 login_page.pack(pady=20, padx=60, fill="both", expand=True)
 
@@ -496,7 +1117,7 @@ register_button = customtkinter.CTkButton(master=login_page, command = register,
 register_button.pack(pady=12, padx=10)
 
 
-# register page
+###################################register page##########################################
 register_page = customtkinter.CTkFrame(master=root)
 register_page.pack(pady=20, padx=60)#, fill="both", expand = True)
 # register label
@@ -517,7 +1138,7 @@ back_r_button.pack(pady=12, padx=10)
 
 
 
-# mode page
+################################### mode page##########################################
 mode_page = customtkinter.CTkFrame(master=root)
 mode_page.pack(pady=20, padx=60)#, fill="both", expand = True)
 # output a label
@@ -535,11 +1156,22 @@ AAI_button.pack(pady=12,padx=10)
 #VVI mode
 VVI_button = customtkinter.CTkButton(master=mode_page, text="VVI", command=VVI)
 VVI_button.pack(pady=12,padx=10)
+
+#AOOR mode
+AOOR_button = customtkinter.CTkButton(master=mode_page, text="AOOR", command=AOOR)
+AOOR_button.pack(pady=12,padx=10)
+#VOOR mode
+VOOR_button = customtkinter.CTkButton(master=mode_page, text="VOOR", command=VOOR)
+VOOR_button.pack(pady=12,padx=10)
+#AAIR mode
+AAIR_button = customtkinter.CTkButton(master=mode_page, text="AAIR", command=AAIR)
+AAIR_button.pack(pady=12,padx=10)
+#VVIR mode
+VVIR_button = customtkinter.CTkButton(master=mode_page, text="VVIR", command=VVIR)
+VVIR_button.pack(pady=12,padx=10)
 #back to login page from mode page
 log_out = customtkinter.CTkButton(master=mode_page, text="Log out", command=user_log_out)
 log_out.pack(pady=20, padx=10)
-egram = customtkinter.CTkButton(master=mode_page, text="Egram")
-egram.pack(pady=20, padx=10)
 #check if the device is different than the previous one
 check_device = customtkinter.CTkButton(master=mode_page, text="Check device", command=check)
 check_device.pack(pady=20, padx=10)
@@ -549,9 +1181,9 @@ check_device.pack(pady=20, padx=10)
 
 
 
-#AOO page
+################################### AOO page##########################################
 AOO_page = customtkinter.CTkFrame(master=root)
-AOO_page.pack(pady=1, padx=60)#, fill="both", expand = True)
+AOO_page.pack(pady=10, padx=60)#, fill="both", expand = True)
 # output a label
 AOO_label = customtkinter.CTkLabel(master=AOO_page, text="Please Enter Parameters for AOO")
 AOO_label.pack(pady=6, padx=10)
@@ -566,12 +1198,12 @@ AOO_label_URL.pack(pady=6, padx=10)
 AOO_URL = customtkinter.CTkEntry(master=AOO_page, placeholder_text="Upper Rate Limit")
 AOO_URL.pack(pady=6, padx=10)
 # Atrial Amplitude
-AOO_label_AA = customtkinter.CTkLabel(master=AOO_page, text="Atrial Amplitude (range: off, 0.5-3.2, 3.5-7.0)")
+AOO_label_AA = customtkinter.CTkLabel(master=AOO_page, text="Atrial Amplitude (range: off, 0.1-5.0)")
 AOO_label_AA.pack(pady=6, padx=10)
 AOO_AA = customtkinter.CTkEntry(master=AOO_page, placeholder_text="Atrial Amplitude")
 AOO_AA.pack(pady=6, padx=10)
 # Atrial Amplitude
-AOO_label_APW = customtkinter.CTkLabel(master=AOO_page, text="Arial Pulse Width (range: 0.05, 0.1-1.9)")
+AOO_label_APW = customtkinter.CTkLabel(master=AOO_page, text="Arial Pulse Width (range: 1-30)")
 AOO_label_APW.pack(pady=6, padx=10)
 AOO_APW = customtkinter.CTkEntry(master=AOO_page, placeholder_text="Arial Pulse Width")
 AOO_APW.pack(pady=6, padx=10)
@@ -592,7 +1224,7 @@ log_out.pack(pady=6, padx=10)
 
 
 
-#VOO page
+################################### VVO page##########################################
 VOO_page = customtkinter.CTkFrame(master=root)
 VOO_page.pack(pady=10, padx=60)#, fill="both", expand = True)
 # output a label
@@ -609,12 +1241,12 @@ VOO_label_URL.pack(pady=6, padx=10)
 VOO_URL = customtkinter.CTkEntry(master=VOO_page, placeholder_text="Upper Rate Limit")
 VOO_URL.pack(pady=6, padx=10)
 # Ventricular Amplitude
-VOO_label_VA = customtkinter.CTkLabel(master=VOO_page, text="Ventricular Amplitude (range: off, 0.5-3.2, 3.5-7.0)")
+VOO_label_VA = customtkinter.CTkLabel(master=VOO_page, text="Ventricular Amplitude (range: off, 0.1-5.0)")
 VOO_label_VA.pack(pady=6, padx=10)
 VOO_VA = customtkinter.CTkEntry(master=VOO_page, placeholder_text="Ventricular Amplitude")
 VOO_VA.pack(pady=6, padx=10)
 # Ventricular Amplitude
-VOO_label_VPW = customtkinter.CTkLabel(master=VOO_page, text="Ventricular Pulse Width (range: 0.05, 0.1-1.9)")
+VOO_label_VPW = customtkinter.CTkLabel(master=VOO_page, text="Ventricular Pulse Width (range: 1-30)")
 VOO_label_VPW.pack(pady=6, padx=10)
 VOO_VPW = customtkinter.CTkEntry(master=VOO_page, placeholder_text="Ventricular Pulse Width")
 VOO_VPW.pack(pady=6, padx=10)
@@ -633,93 +1265,416 @@ log_out.pack(pady=6, padx=10)
 
 
 
-#AAI page
+################################### AAI page##########################################
 AAI_page = customtkinter.CTkFrame(master=root)
-AAI_page.pack(pady=10, padx=60)#, fill="both", expand = True)
+AAI_page.pack(pady=6, padx=60)#, fill="both", expand = True)
 # output a label
 AAI_label = customtkinter.CTkLabel(master=AAI_page, text="Please Enter Parameters for AAI")
-AAI_label.pack(pady=6, padx=10)
+AAI_label.pack(pady=2, padx=10)
 # Lower Rate Limit
 AAI_label_LRL = customtkinter.CTkLabel(master=AAI_page, text="Lower Rate Limit (range: 30-175)")
-AAI_label_LRL.pack(pady=6, padx=10)
+AAI_label_LRL.pack(pady=2, padx=10)
 AAI_LRL = customtkinter.CTkEntry(master=AAI_page, placeholder_text="Lower Rate Limit")
-AAI_LRL.pack(pady=6, padx=10)
+AAI_LRL.pack(pady=2, padx=10)
 # Upper Rate Limit
 AAI_label_URL = customtkinter.CTkLabel(master=AAI_page, text="Upper Rate Limit (range: 50-175)")
-AAI_label_URL.pack(pady=6, padx=10)
+AAI_label_URL.pack(pady=2, padx=10)
 AAI_URL = customtkinter.CTkEntry(master=AAI_page, placeholder_text="Upper Rate Limit")
-AAI_URL.pack(pady=6, padx=10)
+AAI_URL.pack(pady=2, padx=10)
 # Atrial Amplitude
-AAI_label_AA = customtkinter.CTkLabel(master=AAI_page, text="Atrial Amplitude (range: off, 0.5-3.2, 3.5-7.0)")
-AAI_label_AA.pack(pady=6, padx=10)
+AAI_label_AA = customtkinter.CTkLabel(master=AAI_page, text="Atrial Amplitude (range: off, 0.1-5.0)")
+AAI_label_AA.pack(pady=2, padx=10)
 AAI_AA = customtkinter.CTkEntry(master=AAI_page, placeholder_text="Atrial Amplitude")
-AAI_AA.pack(pady=6, padx=10)
+AAI_AA.pack(pady=2, padx=10)
 # Atrial Pulse Width
-AAI_label_APW = customtkinter.CTkLabel(master=AAI_page, text="Atrial Pulse Width (range: 0.05, 0.1-1.9)")
-AAI_label_APW.pack(pady=6, padx=10)
+AAI_label_APW = customtkinter.CTkLabel(master=AAI_page, text="Atrial Pulse Width (range: 1-30)")
+AAI_label_APW.pack(pady=2, padx=10)
 AAI_APW = customtkinter.CTkEntry(master=AAI_page, placeholder_text="Atrial Pulse Width")
-AAI_APW.pack(pady=6, padx=10)
+AAI_APW.pack(pady=2, padx=10)
 # ARP
 AAI_label_ARP = customtkinter.CTkLabel(master=AAI_page, text="ARP (range: 150-500)")
-AAI_label_ARP.pack(pady=6, padx=10)
+AAI_label_ARP.pack(pady=2, padx=10)
 AAI_ARP = customtkinter.CTkEntry(master=AAI_page, placeholder_text="ARP")
-AAI_ARP.pack(pady=6, padx=10)
+AAI_ARP.pack(pady=2, padx=10)
+# Atrial sensitivity
+AAI_label_AS = customtkinter.CTkLabel(master=AAI_page, text="Atrial Sensitivity (range: 0-5)")
+AAI_label_AS.pack(pady=2, padx=10)
+AAI_AS = customtkinter.CTkEntry(master=AAI_page, placeholder_text="Atrial Sensitivity")
+AAI_AS.pack(pady=2, padx=10)
+# PVARP
+AAI_label_PVARP = customtkinter.CTkLabel(master=AAI_page, text="PVARP (range: 150-500)")
+AAI_label_PVARP.pack(pady=2, padx=10)
+AAI_PVARP = customtkinter.CTkEntry(master=AAI_page, placeholder_text="PVARP")
+AAI_PVARP.pack(pady=2, padx=10)
+# Hysteresis
+AAI_label_H = customtkinter.CTkLabel(master=AAI_page, text="Hysteresis Rate Limit (range: Off or same as LRL)")
+AAI_label_H.pack(pady=2, padx=10)
+AAI_H = customtkinter.CTkEntry(master=AAI_page, placeholder_text="Hysteresis Rate Limit")
+AAI_H.pack(pady=2, padx=10)
+# Rate Smoothing
+AAI_label_RS = customtkinter.CTkLabel(master=AAI_page, text="Rate Smoothing (range: Off, 3, 6, 9, 12, 15,18,21, 25)")
+AAI_label_RS.pack(pady=2, padx=10)
+AAI_RS = customtkinter.CTkEntry(master=AAI_page, placeholder_text="Rate Smoothing")
+AAI_RS.pack(pady=2, padx=10)
 #submit
 submit_aai = customtkinter.CTkButton(master = AAI_page, text="Submit", command=submit_aai)
-submit_aai.pack(pady=6, padx=10)
+submit_aai.pack(pady=2, padx=10)
 #back to mode page from AOO
 back_AAI_button = customtkinter.CTkButton(master=AAI_page, text="Back", command = back_button)
-back_AAI_button.pack(pady=6, padx=10)
+back_AAI_button.pack(pady=2, padx=10)
 #log out
 log_out = customtkinter.CTkButton(master=AAI_page, text="Log out", command=user_log_out)
-log_out.pack(pady=6, padx=10)
+log_out.pack(pady=2, padx=10)
 
 
 
-#VVI page
+################################### VVI page##########################################
 VVI_page = customtkinter.CTkFrame(master=root)
 VVI_page.pack(pady=10, padx=60)#, fill="both", expand = True)
 # output a label
 VVI_label = customtkinter.CTkLabel(master=VVI_page, text="Please Enter Parameters for VVI")
-VVI_label.pack(pady=6, padx=10)
+VVI_label.pack(pady=2, padx=10)
 # Lower Rate Limit
 VVI_label_LRL = customtkinter.CTkLabel(master=VVI_page, text="Lower Rate Limit (range: 30-175)")
-VVI_label_LRL.pack(pady=6, padx=10)
+VVI_label_LRL.pack(pady=2, padx=10)
 VVI_LRL = customtkinter.CTkEntry(master=VVI_page, placeholder_text="Lower Rate Limit")
-VVI_LRL.pack(pady=6, padx=10)
+VVI_LRL.pack(pady=2, padx=10)
 # Upper Rate Limit
 VVI_label_URL = customtkinter.CTkLabel(master=VVI_page, text="Upper Rate Limit (range: 50-175)")
-VVI_label_URL.pack(pady=6, padx=10)
+VVI_label_URL.pack(pady=2, padx=10)
 VVI_URL = customtkinter.CTkEntry(master=VVI_page, placeholder_text="Upper Rate Limit")
-VVI_URL.pack(pady=6, padx=10)
+VVI_URL.pack(pady=2, padx=10)
 # Ventricular Amplitude
-VVI_label_VA = customtkinter.CTkLabel(master=VVI_page, text="Ventricular Amplitude (range: off, 0.5-3.2, 3.5-7.0)")
-VVI_label_VA.pack(pady=6, padx=10)
+VVI_label_VA = customtkinter.CTkLabel(master=VVI_page, text="Ventricular Amplitude (range: off, 0.1-5.0)")
+VVI_label_VA.pack(pady=2, padx=10)
 VVI_VA = customtkinter.CTkEntry(master=VVI_page, placeholder_text="Ventricular Amplitude")
-VVI_VA.pack(pady=6, padx=10)
+VVI_VA.pack(pady=2, padx=10)
 #   Ventricular Pulse Width
-VVI_label_VPW = customtkinter.CTkLabel(master=VVI_page, text="Ventricular Pulse Width (range: 0.05, 0.1-1.9)")
-VVI_label_VPW.pack(pady=6, padx=10)
+VVI_label_VPW = customtkinter.CTkLabel(master=VVI_page, text="Ventricular Pulse Width (range: 1-30)")
+VVI_label_VPW.pack(pady=2, padx=10)
 VVI_VPW = customtkinter.CTkEntry(master=VVI_page, placeholder_text="Ventricular Pulse Width")
-VVI_VPW.pack(pady=6, padx=10)
+VVI_VPW.pack(pady=2, padx=10)
 # VRP
 VVI_label_VRP = customtkinter.CTkLabel(master=VVI_page, text="VRP (range: 150-500)")
-VVI_label_VRP.pack(pady=6, padx=10)
+VVI_label_VRP.pack(pady=2, padx=10)
 VVI_VRP = customtkinter.CTkEntry(master=VVI_page, placeholder_text="VRP")
-VVI_VRP.pack(pady=6, padx=10)
+VVI_VRP.pack(pady=2, padx=10)
+#Ventricular Sensitivity
+VVI_label_VS = customtkinter.CTkLabel(master=VVI_page, text="Ventricular Sensitivity (range: 0-5)")
+VVI_label_VS.pack(pady=2, padx=10)
+VVI_VS = customtkinter.CTkEntry(master=VVI_page, placeholder_text="Ventricular Sensitivity")
+VVI_VS.pack(pady=2, padx=10)
+# Hysteresis
+VVI_label_H = customtkinter.CTkLabel(master=VVI_page, text="Hysteresis Rate Limit (range: OFF, 30-175)")
+VVI_label_H.pack(pady=2, padx=10)
+VVI_H = customtkinter.CTkEntry(master=VVI_page, placeholder_text="Hysteresis Rate Limit")
+VVI_H.pack(pady=2, padx=10)
+#Rate Smoothing
+VVI_label_RS = customtkinter.CTkLabel(master=VVI_page, text="Rate Smoothing (range: Off, 3, 6, 9, 12, 15,18,21, 25)")
+VVI_label_RS.pack(pady=2, padx=10)
+VVI_RS = customtkinter.CTkEntry(master=VVI_page, placeholder_text="Rate Smoothing")
+VVI_RS.pack(pady=2, padx=10)
 #submit
 submit_vvi = customtkinter.CTkButton(master = VVI_page, text="Submit", command=submit_vvi)
-submit_vvi.pack(pady=6,padx=10)
+submit_vvi.pack(pady=2,padx=10)
 #back to mode page from AOO
 back_VVI_button = customtkinter.CTkButton(master=VVI_page, text="Back", command = back_button)
-back_VVI_button.pack(pady=6, padx=10)
+back_VVI_button.pack(pady=2, padx=10)
 #log out
 log_out = customtkinter.CTkButton(master=VVI_page, text="Log out", command=user_log_out)
+log_out.pack(pady=2, padx=10)
+
+################################### AOOR page##########################################
+AOOR_page = customtkinter.CTkFrame(master=root)
+AOOR_page.pack(pady=2, padx=60)#, fill="both", expand = True)
+# output a label
+AOOR_label = customtkinter.CTkLabel(master=AOOR_page, text="Please Enter Parameters for AOOR")
+AOOR_label.pack(pady=1, padx=10)
+# Lower Rate Limit
+AOOR_label_LRL = customtkinter.CTkLabel(master=AOOR_page, text="LRL (range: 30-175)")
+AOOR_label_LRL.pack(pady=1, padx=10)
+AOOR_LRL = customtkinter.CTkEntry(master=AOOR_page, placeholder_text="Lower Rate Limit")
+AOOR_LRL.pack(pady=1, padx=10)
+# Upper Rate Limit
+AOOR_label_URL = customtkinter.CTkLabel(master=AOOR_page, text="URL (range: 50-175)")
+AOOR_label_URL.pack(pady=1, padx=10)
+AOOR_URL = customtkinter.CTkEntry(master=AOOR_page, placeholder_text="Upper Rate Limit")
+AOOR_URL.pack(pady=1, padx=10)
+# Maximum Sensor Rate
+AOOR_label_MSR = customtkinter.CTkLabel(master=AOOR_page, text="MSR (range: 50-175)")
+AOOR_label_MSR.pack(pady=1, padx=10)
+AOOR_MSR = customtkinter.CTkEntry(master=AOOR_page, placeholder_text="Maximum Sensor Rate")
+AOOR_MSR.pack(pady=1, padx=10)
+# Atrial Amplitude
+AOOR_label_AA = customtkinter.CTkLabel(master=AOOR_page, text="Atrial Amplitude (range: off, 0.1-5.0)")
+AOOR_label_AA.pack(pady=1, padx=10)
+AOOR_AA = customtkinter.CTkEntry(master=AOOR_page, placeholder_text="Atrial Amplitude")
+AOOR_AA.pack(pady=1, padx=10)
+# Atrial Pulse Width
+AOOR_label_APW = customtkinter.CTkLabel(master=AOOR_page, text="Atrial Pulse Width (range: 1-30)")
+AOOR_label_APW.pack(pady=1, padx=10)
+AOOR_APW = customtkinter.CTkEntry(master=AOOR_page, placeholder_text="Atrial Pulse Width")
+AOOR_APW.pack(pady=1, padx=10)
+# Activity Threshold
+AOOR_label_AT = customtkinter.CTkLabel(master=AOOR_page, text="Activity Threshold (input: V-Low,Low,Med-Low,Med,Med-High,High,V-High)")
+AOOR_label_AT.pack(pady=1, padx=10)
+AOOR_AT = customtkinter.CTkEntry(master=AOOR_page, placeholder_text="Atrial Activity Threshold")
+AOOR_AT.pack(pady=1, padx=10)
+# Reaction Time
+AOOR_label_ReactionT = customtkinter.CTkLabel(master=AOOR_page, text="Reaction Time (range: 10-50)")
+AOOR_label_ReactionT.pack(pady=1, padx=10)
+AOOR_ReactionT = customtkinter.CTkEntry(master=AOOR_page, placeholder_text="Reaction Time")
+AOOR_ReactionT.pack(pady=1, padx=10)
+# Response Factor
+AOOR_label_RF = customtkinter.CTkLabel(master=AOOR_page, text="Response Factor (range: 1-16)")
+AOOR_label_RF.pack(pady=1, padx=10)
+AOOR_RF = customtkinter.CTkEntry(master=AOOR_page, placeholder_text="Response Factor")
+AOOR_RF.pack(pady=1, padx=10)
+#Recovery Time
+AOOR_label_RecoveryT = customtkinter.CTkLabel(master=AOOR_page, text="Recovery Time (range: 2-16)")
+AOOR_label_RecoveryT.pack(pady=1, padx=10)
+AOOR_RecoveryT = customtkinter.CTkEntry(master=AOOR_page, placeholder_text="Recovery Time")
+AOOR_RecoveryT.pack(pady=1, padx=10)
+#submit
+submit_aoor = customtkinter.CTkButton(master = AOOR_page, text="Submit", command=submit_aoor)
+submit_aoor.pack(pady=1,padx=10)
+#back to mode page from AOO
+back_AOOR_button = customtkinter.CTkButton(master=AOOR_page, text="Back", command = back_button)
+back_AOOR_button.pack(pady=6, padx=10)
+#log out
+log_out = customtkinter.CTkButton(master=AOOR_page, text="Log out", command=user_log_out)
 log_out.pack(pady=6, padx=10)
 
 
-#test()
-show_login_page()
-print(1)
-root.mainloop()
+################################### VOOR page##########################################
+VOOR_page = customtkinter.CTkFrame(master=root)
+VOOR_page.pack(pady=11, padx=60)#, fill="both", expand = True)
+# output a label
+VOOR_label = customtkinter.CTkLabel(master=VOOR_page, text="Please Enter Parameters for VOO")
+VOOR_label.pack(pady=1, padx=10)
+# Lower Rate Limit
+VOOR_label_LRL = customtkinter.CTkLabel(master=VOOR_page, text="Lower Rate Limit (range: 30-175)")
+VOOR_label_LRL.pack(pady=1, padx=10)
+VOOR_LRL = customtkinter.CTkEntry(master=VOOR_page, placeholder_text="Lower Rate Limit")
+VOOR_LRL.pack(pady=1, padx=10)
+# Upper Rate Limit
+VOOR_label_URL = customtkinter.CTkLabel(master=VOOR_page, text="Upper Rate Limit (range: 50-175)")
+VOOR_label_URL.pack(pady=1, padx=10)
+VOOR_URL = customtkinter.CTkEntry(master=VOOR_page, placeholder_text="Upper Rate Limit")
+VOOR_URL.pack(pady=1, padx=10)
+# Ventricular Amplitude
+VOOR_label_VA = customtkinter.CTkLabel(master=VOOR_page, text="Ventricular Amplitude (range: off, 0.1-5.0)")
+VOOR_label_VA.pack(pady=1, padx=10)
+VOOR_VA = customtkinter.CTkEntry(master=VOOR_page, placeholder_text="Ventricular Amplitude")
+VOOR_VA.pack(pady=1, padx=10)
+# Ventricular Pulse Width
+VOOR_label_VPW = customtkinter.CTkLabel(master=VOOR_page, text="Ventricular Pulse Width (range: 1-30)")
+VOOR_label_VPW.pack(pady=1, padx=10)
+VOOR_VPW = customtkinter.CTkEntry(master=VOOR_page, placeholder_text="Ventricular Pulse Width")
+VOOR_VPW.pack(pady=1, padx=10)
+# Maximum Sensor Rate
+VOOR_label_MSR = customtkinter.CTkLabel(master=VOOR_page, text="MSR (range: 50-175)")
+VOOR_label_MSR.pack(pady=1, padx=10)
+VOOR_MSR = customtkinter.CTkEntry(master=VOOR_page, placeholder_text="Maximum Sensor Rate")
+VOOR_MSR.pack(pady=1, padx=10)
+# Activity Threshold
+VOOR_label_AT = customtkinter.CTkLabel(master=VOOR_page, text="Activity Threshold (input: V-Low,Low,Med-Low,Med,Med-High,High,V-High)")
+VOOR_label_AT.pack(pady=1, padx=10)
+VOOR_AT = customtkinter.CTkEntry(master=VOOR_page, placeholder_text="Atrial Activity Threshold")
+VOOR_AT.pack(pady=1, padx=10)
+# Reaction Time
+VOOR_label_ReactionT = customtkinter.CTkLabel(master=VOOR_page, text="Reaction Time (range: 10-50)")
+VOOR_label_ReactionT.pack(pady=1, padx=10)
+VOOR_ReactionT = customtkinter.CTkEntry(master=VOOR_page, placeholder_text="Reaction Time")
+VOOR_ReactionT.pack(pady=1, padx=10)
+# Response Factor
+VOOR_label_RF = customtkinter.CTkLabel(master=VOOR_page, text="Response Factor (range: 1-16)")
+VOOR_label_RF.pack(pady=1, padx=10)
+VOOR_RF = customtkinter.CTkEntry(master=VOOR_page, placeholder_text="Response Factor")
+VOOR_RF.pack(pady=1, padx=10)
+#Recovery Time
+VOOR_label_RecoveryT = customtkinter.CTkLabel(master=VOOR_page, text="Recovery Time (range: 2-16)")
+VOOR_label_RecoveryT.pack(pady=1, padx=10)
+VOOR_RecoveryT = customtkinter.CTkEntry(master=VOOR_page, placeholder_text="Recovery Time")
+VOOR_RecoveryT.pack(pady=1, padx=10)
+#submit
+submit_voor = customtkinter.CTkButton(master = VOOR_page, text="Submit", command=submit_voo)
+submit_voor.pack(pady=6, padx=10)
+#back to mode page from AOO
+back_voor_button = customtkinter.CTkButton(master=VOOR_page, text="Back", command = back_button)
+back_voor_button.pack(pady=6, padx=10)
+#log out
+log_out = customtkinter.CTkButton(master=VOOR_page, text="Log out", command=user_log_out)
+log_out.pack(pady=6, padx=10)
 
+
+################################### AAIR page##########################################
+AAIR_page = customtkinter.CTkFrame(master=root)
+AAIR_page.pack(pady=0, padx=60)#, fill="both", expand = True)
+# output a label
+AAIR_label = customtkinter.CTkLabel(master=AAIR_page, text="Please Enter Parameters for AAIR")
+AAIR_label.grid(row=0, column=0, ipadx=5, ipady=5)
+# Lower Rate Limit
+AAIR_label_LRL = customtkinter.CTkLabel(master=AAIR_page, text="Lower Rate Limit (range: 30-175)")
+AAIR_label_LRL.grid(row=1, column=0, ipadx=5, ipady=5)
+AAIR_LRL = customtkinter.CTkEntry(master=AAIR_page, placeholder_text="Lower Rate Limit")
+AAIR_LRL.grid(row=1, column=1, ipadx=5, ipady=5)
+# Upper Rate Limit
+AAIR_label_URL = customtkinter.CTkLabel(master=AAIR_page, text="Upper Rate Limit (range: 50-175)")
+AAIR_label_URL.grid(row=2, column=0, ipadx=5, ipady=5)
+AAIR_URL = customtkinter.CTkEntry(master=AAIR_page, placeholder_text="Upper Rate Limit")
+AAIR_URL.grid(row=2, column=1, ipadx=5, ipady=5)
+# Atrial Amplitude
+AAIR_label_AA = customtkinter.CTkLabel(master=AAIR_page, text="Atrial Amplitude (range: off, 0.1-5.0)")
+AAIR_label_AA.grid(row=3, column=0, ipadx=5, ipady=5)
+AAIR_AA = customtkinter.CTkEntry(master=AAIR_page, placeholder_text="Atrial Amplitude")
+AAIR_AA.grid(row=3, column=1, ipadx=5, ipady=5)
+# Atrial Pulse Width
+AAIR_label_APW = customtkinter.CTkLabel(master=AAIR_page, text="Atrial Pulse Width (range: 1-30)")
+AAIR_label_APW.grid(row=4, column=0, ipadx=5, ipady=5)
+AAIR_APW = customtkinter.CTkEntry(master=AAIR_page, placeholder_text="Atrial Pulse Width")
+AAIR_APW.grid(row=4, column=1, ipadx=5, ipady=5)
+# ARP
+AAIR_label_ARP = customtkinter.CTkLabel(master=AAIR_page, text="ARP (range: 150-500)")
+AAIR_label_ARP.grid(row=5, column=0, ipadx=5, ipady=5)
+AAIR_ARP = customtkinter.CTkEntry(master=AAIR_page, placeholder_text="ARP")
+AAIR_ARP.grid(row=5, column=1, ipadx=5, ipady=5)
+# Atrial sensitivity
+AAIR_label_AS = customtkinter.CTkLabel(master=AAIR_page, text="Atrial Sensitivity (range: 0-5)")
+AAIR_label_AS.grid(row=6, column=0, ipadx=5, ipady=5)
+AAIR_AS = customtkinter.CTkEntry(master=AAIR_page, placeholder_text="Atrial Sensitivity")
+AAIR_AS.grid(row=6, column=1, ipadx=5, ipady=5)
+# PVARP
+AAIR_label_PVARP = customtkinter.CTkLabel(master=AAIR_page, text="PVARP (range: 150-500)")
+AAIR_label_PVARP.grid(row=7, column=0, ipadx=5, ipady=5)
+AAIR_PVARP = customtkinter.CTkEntry(master=AAIR_page, placeholder_text="PVARP")
+AAIR_PVARP.grid(row=7, column=1, ipadx=5, ipady=5)
+# Hysteresis
+AAIR_label_H = customtkinter.CTkLabel(master=AAIR_page, text="Hysteresis Rate Limit (range: Off or same as LRL)")
+AAIR_label_H.grid(row=8, column=0, ipadx=5, ipady=5)
+AAIR_H = customtkinter.CTkEntry(master=AAIR_page, placeholder_text="Hysteresis Rate Limit")
+AAIR_H.grid(row=8, column=1, ipadx=5, ipady=5)
+# Rate Smoothing
+AAIR_label_RS = customtkinter.CTkLabel(master=AAIR_page, text="Rate Smoothing (range: Off, 3, 6, 9, 12, 15,18,21, 25)")
+AAIR_label_RS.grid(row=9, column=0, ipadx=5, ipady=5)
+AAIR_RS = customtkinter.CTkEntry(master=AAIR_page, placeholder_text="Rate Smoothing")
+AAIR_RS.grid(row=9, column=1, ipadx=5, ipady=5)
+# Maximum Sensor Rate
+AAIR_label_MSR = customtkinter.CTkLabel(master=AAIR_page, text="MSR (range: 50-175)")
+AAIR_label_MSR.grid(row=10, column=0, ipadx=5, ipady=5)
+AAIR_MSR = customtkinter.CTkEntry(master=AAIR_page, placeholder_text="Maximum Sensor Rate")
+AAIR_MSR.grid(row=10, column=1, ipadx=5, ipady=5)
+# Activity Threshold
+AAIR_label_AT = customtkinter.CTkLabel(master=AAIR_page, text="Activity Threshold (input: V-Low,Low,Med-Low,Med,Med-High,High,V-High)")
+AAIR_label_AT.grid(row=11, column=0, ipadx=5, ipady=5)
+AAIR_AT = customtkinter.CTkEntry(master=AAIR_page, placeholder_text="Atrial Activity Threshold")
+AAIR_AT.grid(row=11, column=1, ipadx=5, ipady=5)
+# Reaction Time
+AAIR_label_ReactionT = customtkinter.CTkLabel(master=AAIR_page, text="Reaction Time (range: 10-50)")
+AAIR_label_ReactionT.grid(row=12, column=0, ipadx=5, ipady=5)
+AAIR_ReactionT = customtkinter.CTkEntry(master=AAIR_page, placeholder_text="Reaction Time")
+AAIR_ReactionT.grid(row=12, column=1, ipadx=5, ipady=5)
+# Response Factor
+AAIR_label_RF = customtkinter.CTkLabel(master=AAIR_page, text="Response Factor (range: 1-16)")
+AAIR_label_RF.grid(row=13, column=0, ipadx=5, ipady=5)
+AAIR_RF = customtkinter.CTkEntry(master=AAIR_page, placeholder_text="Response Factor")
+AAIR_RF.grid(row=13, column=1, ipadx=5, ipady=5)
+#Recovery Time
+AAIR_label_RecoveryT = customtkinter.CTkLabel(master=AAIR_page, text="Recovery Time (range: 2-16)")
+AAIR_label_RecoveryT.grid(row=14, column=0, ipadx=5, ipady=5)
+AAIR_RecoveryT = customtkinter.CTkEntry(master=AAIR_page, placeholder_text="Recovery Time")
+AAIR_RecoveryT.grid(row=14, column=1, ipadx=5, ipady=5)
+
+#submit
+submit_aair = customtkinter.CTkButton(master = AAIR_page, text="Submit", command=submit_aair)
+submit_aair.grid(row=15, column=0, ipadx=5, ipady=10)
+#back to mode page from AOO
+back_AAIR_button = customtkinter.CTkButton(master=AAIR_page, text="Back", command = back_button)
+back_AAIR_button.grid(row=16, column=0, ipadx=5, ipady=10)
+#log out
+log_out = customtkinter.CTkButton(master=AAIR_page, text="Log out", command=user_log_out)
+log_out.grid(row=17, column=0, ipadx=5, ipady=10)
+
+################################### VVIR page##########################################
+VVIR_page = customtkinter.CTkFrame(master=root)
+VVIR_page.pack(pady=0, padx=60)#, fill="both", expand = True)
+# output a label
+VVIR_label = customtkinter.CTkLabel(master=VVIR_page, text="Please Enter Parameters for VVIR")
+VVIR_label.grid(row=0, column=0, ipadx=5, ipady=5)
+# Lower Rate Limit
+VVIR_label_LRL = customtkinter.CTkLabel(master=VVIR_page, text="Lower Rate Limit (range: 30-175)")
+VVIR_label_LRL.grid(row=1, column=0, ipadx=5, ipady=5)
+VVIR_LRL = customtkinter.CTkEntry(master=VVIR_page, placeholder_text="Lower Rate Limit")
+VVIR_LRL.grid(row=1, column=1, ipadx=5, ipady=5)
+# Upper Rate Limit
+VVIR_label_URL = customtkinter.CTkLabel(master=VVIR_page, text="Upper Rate Limit (range: 50-175)")
+VVIR_label_URL.grid(row=2, column=0, ipadx=5, ipady=5)
+VVIR_URL = customtkinter.CTkEntry(master=VVIR_page, placeholder_text="Upper Rate Limit")
+VVIR_URL.grid(row=2, column=1, ipadx=5, ipady=5)
+# Ventricular Amplitude
+VVIR_label_VA = customtkinter.CTkLabel(master=VVIR_page, text="Ventricular Amplitude (range: off, 0.1-5.0)")
+VVIR_label_VA.grid(row=3, column=0, ipadx=5, ipady=5)
+VVIR_VA = customtkinter.CTkEntry(master=VVIR_page, placeholder_text="Ventricular Amplitude")
+VVIR_VA.grid(row=3, column=1, ipadx=5, ipady=5)
+#   Ventricular Pulse Width
+VVIR_label_VPW = customtkinter.CTkLabel(master=VVIR_page, text="Ventricular Pulse Width (range: 1-30)")
+VVIR_label_VPW.grid(row=4, column=0, ipadx=5, ipady=5)
+VVIR_VPW = customtkinter.CTkEntry(master=VVIR_page, placeholder_text="Ventricular Pulse Width")
+VVIR_VPW.grid(row=4, column=1, ipadx=5, ipady=5)
+# VRP
+VVIR_label_VRP = customtkinter.CTkLabel(master=VVIR_page, text="VRP (range: 150-500)")
+VVIR_label_VRP.grid(row=5, column=0, ipadx=5, ipady=5)
+VVIR_VRP = customtkinter.CTkEntry(master=VVIR_page, placeholder_text="VRP")
+VVIR_VRP.grid(row=5, column=1, ipadx=5, ipady=5)
+#Ventricular Sensitivity
+VVIR_label_VS = customtkinter.CTkLabel(master=VVIR_page, text="Ventricular Sensitivity (range: 0-5)")
+VVIR_label_VS.grid(row=6, column=0, ipadx=5, ipady=5)
+VVIR_VS = customtkinter.CTkEntry(master=VVIR_page, placeholder_text="Ventricular Sensitivity")
+VVIR_VS.grid(row=6, column=1, ipadx=5, ipady=5)
+# Hysteresis
+VVIR_label_H = customtkinter.CTkLabel(master=VVIR_page, text="Hysteresis Rate Limit (range: OFF, 30-175)")
+VVIR_label_H.grid(row=7, column=0, ipadx=5, ipady=5)
+VVIR_H = customtkinter.CTkEntry(master=VVIR_page, placeholder_text="Hysteresis Rate Limit")
+VVIR_H.grid(row=7, column=1, ipadx=5, ipady=5)
+#Rate Smoothing
+VVIR_label_RS = customtkinter.CTkLabel(master=VVIR_page, text="Rate Smoothing (range: Off, 3, 6, 9, 12, 15,18,21, 25)")
+VVIR_label_RS.grid(row=8, column=0, ipadx=5, ipady=5)
+VVIR_RS = customtkinter.CTkEntry(master=VVIR_page, placeholder_text="Rate Smoothing")
+VVIR_RS.grid(row=8, column=1, ipadx=5, ipady=5)
+# Maximum Sensor Rate
+VVIR_label_MSR = customtkinter.CTkLabel(master=VVIR_page, text="MSR (range: 50-175)")
+VVIR_label_MSR.grid(row=9, column=0, ipadx=5, ipady=5)
+VVIR_MSR = customtkinter.CTkEntry(master=VVIR_page, placeholder_text="Maximum Sensor Rate")
+VVIR_MSR.grid(row=9, column=1, ipadx=5, ipady=5)
+# Activity Threshold
+VVIR_label_AT = customtkinter.CTkLabel(master=VVIR_page, text="Activity Threshold (input: V-Low,Low,Med-Low,Med,Med-High,High,V-High)")
+VVIR_label_AT.grid(row=10, column=0, ipadx=5, ipady=5)
+VVIR_AT = customtkinter.CTkEntry(master=VVIR_page, placeholder_text="Activity Threshold")
+VVIR_AT.grid(row=10, column=1, ipadx=5, ipady=5)
+# Reaction Time
+VVIR_label_ReactionT = customtkinter.CTkLabel(master=VVIR_page, text="Reaction Time (range: 10-50)")
+VVIR_label_ReactionT.grid(row=11, column=0, ipadx=5, ipady=5)
+VVIR_ReactionT = customtkinter.CTkEntry(master=VVIR_page, placeholder_text="Reaction Time")
+VVIR_ReactionT.grid(row=11, column=1, ipadx=5, ipady=5)
+# Response Factor
+VVIR_label_RF = customtkinter.CTkLabel(master=VVIR_page, text="Response Factor (range: 1-16)")
+VVIR_label_RF.grid(row=12, column=0, ipadx=5, ipady=5)
+VVIR_RF = customtkinter.CTkEntry(master=VVIR_page, placeholder_text="Response Factor")
+VVIR_RF.grid(row=12, column=1, ipadx=5, ipady=5)
+#Recovery Time
+VVIR_label_RecoveryT = customtkinter.CTkLabel(master=VVIR_page, text="Recovery Time (range: 2-16)")
+VVIR_label_RecoveryT.grid(row=13, column=0, ipadx=5, ipady=5)
+VVIR_RecoveryT = customtkinter.CTkEntry(master=VVIR_page, placeholder_text="Recovery Time")
+VVIR_RecoveryT.grid(row=13, column=1, ipadx=5, ipady=5)
+#submit
+submit_vvir = customtkinter.CTkButton(master = VVIR_page, text="Submit", command=submit_vvir)
+submit_vvir.grid(row=14, column=0, ipadx=10, ipady=10)
+#back to mode page from AOO
+back_VVIR_button = customtkinter.CTkButton(master=VVIR_page, text="Back", command = back_button)
+back_VVIR_button.grid(row=15, column=0, ipadx=10, ipady=10)
+#log out
+log_out = customtkinter.CTkButton(master=VVIR_page, text="Log out", command=user_log_out)
+log_out.grid(row=16, column=0, ipadx=10, ipady=10)
+
+show_login_page()
+root.mainloop()
