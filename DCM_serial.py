@@ -22,25 +22,26 @@ ser = serial.Serial()
 # ser.baudrate = 115200
 # ser = serial.Serial('COM12', baudrate=115200)
 
+Start = b'\x16'
 
-def test():
-    Start = b'\x16'
+# second bit
 
-    # second bit
+SYNC = b'\x22'
 
-    SYNC = b'\x22'
+Fn_set = b'\x55'
 
-    Fn_set = b'\x55'
-    
-    m_input = 4
-    r_input = 100
-    pw_input = 2
-    aplitude_input = 100
-    ref_period = 150
-    #detect threshold
-    threshold_input = 80 
-    max_input = 150
-    factor_input = 30
+m_input = 4
+r_input = 100
+pw_input = 2
+aplitude_input = 100
+ref_period = 150
+# detect threshold
+threshold_input = 80
+max_input = 150
+factor_input = 30
+
+def test(Start, SYNC, Fn_set):
+
     
     mode = struct.pack("B", int(m_input))
     # rate = struct.pack("BB", 0, 1)

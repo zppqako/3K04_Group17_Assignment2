@@ -2,7 +2,7 @@ import customtkinter
 import hashlib
 import serial
 #import serial.tools.list_ports
-from tkinter import messagebox
+from tkinter import messagebox, Canvas, Scrollbar
 import time
 import threading
 import tkinter as tk
@@ -18,6 +18,7 @@ root.geometry("700x400")
 users = {}
 
 users_len = 0
+
 
 
 def show_login_page():
@@ -1358,7 +1359,6 @@ log_out.pack(pady=6, padx=10)
 
 
 
-
 ################################### AAI page##########################################
 AAI_page = customtkinter.CTkFrame(master=root)
 AAI_page.pack(pady=6, padx=60)#, fill="both", expand = True)
@@ -1690,6 +1690,7 @@ log_out = customtkinter.CTkButton(master=AAIR_page, text="Log out", command=user
 log_out.grid(row=17, column=0, ipadx=5, ipady=10)
 
 ################################### VVIR page##########################################
+
 VVIR_page = customtkinter.CTkFrame(master=root)
 VVIR_page.pack(pady=0, padx=60)#, fill="both", expand = True)
 # output a label
@@ -1770,7 +1771,8 @@ back_VVIR_button.grid(row=15, column=0, ipadx=10, ipady=10)
 log_out = customtkinter.CTkButton(master=VVIR_page, text="Log out", command=user_log_out)
 log_out.grid(row=16, column=0, ipadx=10, ipady=10)
 
-float_value = 0.99
-customtkinter.set_widget_scaling(float_value)
+
+
+
 show_login_page()
 root.mainloop()
