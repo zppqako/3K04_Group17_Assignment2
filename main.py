@@ -16,7 +16,7 @@ import time
 import threading
 import tkinter as tk
 from DCM_serial import input
-from Display_graph import plot_atrium, plot_ventricle
+from Display_graph import create_real_time_dual_graphs
 
 customtkinter.set_appearance_mode("dark")
 customtkinter.set_default_color_theme("dark-blue")
@@ -1246,6 +1246,13 @@ def refresh():
 def check():
     messagebox.showinfo("Success", "The pacemaker has been the same")
 
+def plot():
+    plot_root = tk.Tk()
+
+    real_time_dual_graphs = create_real_time_dual_graphs(root)
+
+    root.mainloop()
+
 
 ###################################login page##########################################
 login_page = customtkinter.CTkFrame(master=root)
@@ -1325,9 +1332,9 @@ log_out.pack(pady=12, padx=10)
 #check if the device is different than the previous one
 check_device = customtkinter.CTkButton(master=mode_page, text="Check device", command=check)
 check_device.pack(pady=12, padx=10)
-A_button = customtkinter.CTkButton(master=mode_page, text="Atrial Button", command = plot_atrium)
+A_button = customtkinter.CTkButton(master=mode_page, text="Atrial Button", command = plot)
 A_button.pack(pady=12,padx=10)
-V_button = customtkinter.CTkButton(master=mode_page, text="Ventricular Button", command = plot_ventricle)
+V_button = customtkinter.CTkButton(master=mode_page, text="Ventricular Button")
 V_button.pack(pady=12,padx=10)
 
 

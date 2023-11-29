@@ -4,61 +4,50 @@ import matplotlib.pyplot as plt
 from DCM_serial import receive
 
 
-def plot_atrium():
-    x = []
-    y1 = []
+class RealTimeDualGraphs:
+    def __init__(self, master):
+        self.master = master
+        self.master.title("Real-time Dual Graphs")
 
-    fig, ax = plt.subplots()
-    line1, = ax.plot([], [], label='Atrium')
-    ax.legend()
+        self.x = []
+        self.y1 = []
+        self.y2 = []
 
-    def update_plot():
-        i = len(x)
-        x.append(i)
+        self.fig, (self.ax1, self.ax2) = plt.subplots(2, 1)
+        self.line1, = self.ax1.plot([], [], label='Input 1')
+        self.line2, = self.ax2.plot([], [], label='Input 2')
+        self.ax1.legend()
+        self.ax2.legend()
 
-        atr, _ = receive()  # Assuming receive() returns data for Input 1 and Input 2
-        y1.append(atr)
+        self.canvas = FigureCanvasTkAgg(self.fig, master=self.master)
+        self.canvas.get_tk_widget().pack()
 
-        line1.set_data(x, y1)
-        ax.relim()
-        ax.autoscale_view()
+        self.master.after(100, self.update_plot)
 
-        canvas.draw_idle()
-        root.after(100, update_plot)
+    def update_plot(self):
+        i = len(self.x)
+        self.x.append(i)
 
-    update_plot()
-    canvas = FigureCanvasTkAgg(fig, master=root)
-    canvas.get_tk_widget().pack()
+        atr, vent = receive()
 
+        self.y1.append(atr)
+        self.y2.append(vent)
 
-def plot_ventricle():
-    x = []
-    y2 = []
+        self.line1.set_data(self.x, self.y1)
+        self.line2.set_data(self.x, self.y2)
+        self.ax1.relim()
+        self.ax1.autoscale_view()
+        self.ax2.relim()
+        self.ax2.autoscale_view()
 
-    fig, ax = plt.subplots()
-    line2, = ax.plot([], [], label='Ventricle')
-    ax.legend()
+        self.canvas.draw_idle()
 
-    def update_plot():
-        i = len(x)
-        x.append(i)
+        self.master.after(100, self.update_plot)
 
-        _, vent = receive()  # Assuming receive() returns data for Input 1 and Input 2
-        y2.append(vent)
-
-        line2.set_data(x, y2)
-        ax.relim()
-        ax.autoscale_view()
-
-        canvas.draw_idle()
-        root.after(100, update_plot)
-
-    update_plot()
-    canvas = FigureCanvasTkAgg(fig, master=root)
-    canvas.get_tk_widget().pack()
-
-
-root = tk.Tk()
-
-
-root.mainloop()
+def create_real_time_dual_graphs(master):
+    return RealTimeDualGraphs(master)
+# root = tk.Tk()
+#
+# real_time_dual_graphs = RealTimeDualGraphs(root)
+#
+# root.mainloop()
