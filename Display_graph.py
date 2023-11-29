@@ -3,7 +3,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
 import numpy as np
 from itertools import count
-
+from DCM_serial import 
 
 # class RealTimeSineWave:
 #     def __init__(self, master):
