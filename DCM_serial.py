@@ -7,7 +7,7 @@ import time
 
 # this file is the one you spit data to send
 
-frdm_port = "COM3"
+frdm_port = "COM12"
 
 
 ser = serial.Serial()
@@ -95,22 +95,22 @@ def receive():
         # print(mode)
         # rate = struct.unpack("B", data[1:2])
         # print(rate)
-        ATR_signal = struct.unpack("d", data[0:8])[0]
+        ATR_signal = struct.unpack(">d", data[0:8])[0]
         # print(ATR_signal)
-        VENT_signal = struct.unpack("d", data[8:16])[0]
+        VENT_signal = struct.unpack(">d", data[8:16])[0]
 
         # sig1 = ATR_signal
         # sig2 = VENT_signal
         
         print("finish reading")
         # return [sig1,sig2]
-        print([ATR_signal,VENT_signal])
+        return ATR_signal,VENT_signal
     
 
 # input()
 # receive()
 # i = 0
 # while i < 100:
-#     receive()
+#     print(receive())
 #     i+=1
 # print(result)

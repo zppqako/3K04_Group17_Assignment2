@@ -3,7 +3,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
 import numpy as np
 from itertools import count
-from DCM_serial import 
+from DCM_serial import receive
 
 # class RealTimeSineWave:
 #     def __init__(self, master):
@@ -54,7 +54,7 @@ from DCM_serial import
 #
 # root.mainloop()
 class RealTimeDualGraphs:
-    def __init__(self, master, input1, input2):
+    def __init__(self, master):
         self.master = master
         self.master.title("Real-time Dual Graphs")
 
@@ -62,8 +62,8 @@ class RealTimeDualGraphs:
         self.y1 = []
         self.y2 = []
 
-        self.input1 = input1
-        self.input2 = input2
+        # self.input1 = input1
+        # self.input2 = input2
 
         self.fig, (self.ax1, self.ax2) = plt.subplots(2, 1)
         self.line1, = self.ax1.plot([], [], label='Input 1')
@@ -79,10 +79,13 @@ class RealTimeDualGraphs:
     def update_plot(self):
         i = len(self.x)
         self.x.append(i)
-        y1 = self.input1
-        y2 = self.input2
-        self.y1.append(y1)
-        self.y2.append(y2)
+        # y1 = self.input1
+        # y2 = self.input2
+        
+        atr, vent = receive()
+        
+        self.y1.append(atr)
+        self.y2.append(vent)
 
         self.line1.set_data(self.x, self.y1)
         self.line2.set_data(self.x, self.y2)
@@ -100,11 +103,9 @@ class RealTimeDualGraphs:
 root = tk.Tk()
 
 
-input_value1 = 3
-input_value2 = 5
 
 
-real_time_dual_graphs = RealTimeDualGraphs(root, input_value1, input_value2)
+real_time_dual_graphs = RealTimeDualGraphs(root)
 
 
 root.mainloop()
