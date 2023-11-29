@@ -9,13 +9,6 @@ import time
 
 frdm_port = "COM3"
 
-Start = b'\x16'
-
-# second bit
-
-SYNC = b'\x22'
-
-Fn_set = b'\x55'
 
 ser = serial.Serial()
 
@@ -46,37 +39,5 @@ def input(lrl, url, amplitude, pw, rp, factor_input, threshold, mode):
         print("Connect")
         pacemaker.write(signal_echo)
 
-# input()
 
-# def receive():
-#     Start = b'\x16'
-#     SYNC = b'\x22'
-#     Fn_set = b'\x55'
-#     # Signal_echo = b'\x16\x22'# + b'\00' * 17
-#     Signal_echo = Start + SYNC
-#     # i=0
-#     # while(i<72):
-#     #     Signal_echo = Signal_echo + struct.pack("B", 0)
-#     #     i = i+1
-
-#     with serial.Serial(frdm_port, 115200) as pacemaker:
-#         try:
-#             print("reading")
-#             pacemaker.write(Signal_echo)
-#             time.sleep(0.1)
-#             print("keep reading")
-            
-#             data = pacemaker.read(16)
-#             print("afer reading")
-#             ATR_signal = struct.unpack("d", data[0:8])[0]
-#             VENT_signal = struct.unpack("d", data[8:16])[0]
-            
-#             print("finish reading")
-#             return [ATR_signal,VENT_signal]
-#         except Exception as e:
-#             print("wrong")
-    
-# receive()
-
-# print(result)
 
