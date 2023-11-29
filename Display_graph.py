@@ -29,8 +29,9 @@ class RealTimeDualGraphs:
         self.x.append(i)
 
         atr, vent = receive()
-
-        self.y1.append(atr)
+        if atr < 5:
+            atr = 0
+        self.y2.append(atr)
         self.y2.append(vent)
 
         self.line1.set_data(self.x, self.y1)

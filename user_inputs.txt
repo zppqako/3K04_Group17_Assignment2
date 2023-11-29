@@ -1,13 +1,4 @@
-lower limit rate:50.0 
-upper limit rate:50.0 
-ventricular amplitude:98.0 
-ventricular pulse width:5.0 
-ventricular refactory period:160.0 
-ventricular sensitivity:8.0 
-hysteresis:off 
-rate smoothing:off 
-maximum sensor rate:75.0 
-activity threshold:V-Low 
-reaction time:40.0 
-response factor:4.0 
-recovery time:8.0 
+lower limit rate:60.0 
+upper limit rate:150.0 
+atrial amplitude:100.0 
+atrial pulse width:2.0 

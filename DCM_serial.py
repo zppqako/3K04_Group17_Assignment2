@@ -7,7 +7,7 @@ import time
 
 # this file is the one you spit data to send
 
-frdm_port = "COM12"
+frdm_port = "COM3"
 
 
 ser = serial.Serial()
@@ -67,45 +67,45 @@ def input(lrl, url, amplitude, pw, rp, factor_input, threshold, mode):
 
 
 def receive():
-    # Start = b'\x16'
-    # SYNC = b'\x22'
-    # Fn_set = b'\x55'
-    # mode = struct.pack("B", int(0))
-    # Signal_echo = Start + SYNC
-    #
-    #
-    # i=0
-    # while(i<15):
-    #     Signal_echo = Signal_echo + struct.pack("B", 0)
-    #     i = i+1
-    #
-    # with serial.Serial(frdm_port, 115200, timeout=1) as pacemaker:
-    #     pacemaker.reset_input_buffer()
-    #     pacemaker.reset_output_buffer()
-    #
-    #
-    #     # print("reading")
-    #     pacemaker.write(Signal_echo)
-    #     # time.sleep(1)
-    #
-    #     data = pacemaker.read(16)
-    #     # print(data[0])
-    #     # print("afer reading")
-    #     # mode = struct.unpack("b", data[0])
-    #     # print(mode)
-    #     # rate = struct.unpack("B", data[1:2])
-    #     # print(rate)
-    #     ATR_signal = struct.unpack(">d", data[0:8])[0]
-    #     # print(ATR_signal)
-    #     VENT_signal = struct.unpack(">d", data[8:16])[0]
-    #
-    #     # sig1 = ATR_signal
-    #     # sig2 = VENT_signal
-    #
-    #     print("finish reading")
-    #     # return [sig1,sig2]
-    #     return ATR_signal,VENT_signal
-        return 1, 2
+    Start = b'\x16'
+    SYNC = b'\x22'
+    Fn_set = b'\x55'
+    mode = struct.pack("B", int(0))
+    Signal_echo = Start + SYNC
+
+
+    i=0
+    while(i<15):
+        Signal_echo = Signal_echo + struct.pack("B", 0)
+        i = i+1
+
+    with serial.Serial(frdm_port, 115200, timeout=1) as pacemaker:
+        pacemaker.reset_input_buffer()
+        pacemaker.reset_output_buffer()
+
+
+        # print("reading")
+        pacemaker.write(Signal_echo)
+        # time.sleep(1)
+
+        data = pacemaker.read(16)
+        # print(data[0])
+        # print("afer reading")
+        # mode = struct.unpack("b", data[0])
+        # print(mode)
+        # rate = struct.unpack("B", data[1:2])
+        # print(rate)
+        ATR_signal = struct.unpack(">d", data[0:8])[0]
+        # print(ATR_signal)
+        VENT_signal = struct.unpack(">d", data[8:16])[0]
+
+        # sig1 = ATR_signal
+        # sig2 = VENT_signal
+
+        print("finish reading")
+        # return [sig1,sig2]
+        return ATR_signal,VENT_signal
+    #     return 1, 2
     
 
 # input()

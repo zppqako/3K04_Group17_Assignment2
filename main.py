@@ -1249,7 +1249,7 @@ def check():
 def plot():
     plot_root = tk.Tk()
 
-    real_time_dual_graphs = create_real_time_dual_graphs(root)
+    real_time_dual_graphs = create_real_time_dual_graphs(plot_root)
 
     root.mainloop()
 
