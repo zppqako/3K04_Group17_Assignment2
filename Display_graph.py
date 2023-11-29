@@ -5,51 +5,106 @@ import numpy as np
 from itertools import count
 
 
-class RealTimeSineWave:
-    def __init__(self, master):
+# class RealTimeSineWave:
+#     def __init__(self, master):
+#         self.master = master
+#         self.master.title("Real-time Sine Wave")
+#
+#         # 初始化空的 x 和 y 列表
+#         self.x = []
+#         self.y = []
+#
+#         # 创建 Matplotlib 图表
+#         self.fig, self.ax = plt.subplots()
+#         self.line, = self.ax.plot([], [], label='Sine Wave')
+#         self.ax.legend()
+#
+#         # 创建 Canvas 组件
+#         self.canvas = FigureCanvasTkAgg(self.fig, master=self.master)
+#         self.canvas.get_tk_widget().pack()
+#
+#         # 打开交互模式
+#         self.master.after(100, self.update_plot)  # 定时更新图表
+#
+#     def update_plot(self):
+#         # 生成新的 x 和 y 值
+#         i = len(self.x)
+#         self.x.append(i)
+#         y = np.sin(i / 10)  # sine wave 的生成方式
+#         self.y.append(y)
+#
+#         # 更新折线图
+#         self.line.set_data(self.x, self.y)
+#         self.ax.relim()
+#         self.ax.autoscale_view()
+#
+#
+#         self.canvas.draw_idle()
+#
+#
+#         self.master.after(100, self.update_plot)
+#
+#
+#
+# root = tk.Tk()
+#
+#
+# real_time_sine_wave = RealTimeSineWave(root)
+#
+#
+# root.mainloop()
+class RealTimeDualGraphs:
+    def __init__(self, master, input1, input2):
         self.master = master
-        self.master.title("Real-time Sine Wave")
+        self.master.title("Real-time Dual Graphs")
 
-        # 初始化空的 x 和 y 列表
         self.x = []
-        self.y = []
+        self.y1 = []
+        self.y2 = []
 
-        # 创建 Matplotlib 图表
-        self.fig, self.ax = plt.subplots()
-        self.line, = self.ax.plot([], [], label='Sine Wave')
-        self.ax.legend()
+        self.input1 = input1
+        self.input2 = input2
 
-        # 创建 Canvas 组件
+        self.fig, (self.ax1, self.ax2) = plt.subplots(2, 1)
+        self.line1, = self.ax1.plot([], [], label='Input 1')
+        self.line2, = self.ax2.plot([], [], label='Input 2')
+        self.ax1.legend()
+        self.ax2.legend()
+
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.master)
         self.canvas.get_tk_widget().pack()
 
-        # 打开交互模式
-        self.master.after(100, self.update_plot)  # 定时更新图表
+        self.master.after(100, self.update_plot)
 
     def update_plot(self):
-        # 生成新的 x 和 y 值
         i = len(self.x)
         self.x.append(i)
-        y = np.sin(i / 10)  # sine wave 的生成方式
-        self.y.append(y)
+        y1 = self.input1
+        y2 = self.input2
+        self.y1.append(y1)
+        self.y2.append(y2)
 
-        # 更新折线图
-        self.line.set_data(self.x, self.y)
-        self.ax.relim()
-        self.ax.autoscale_view()
+        self.line1.set_data(self.x, self.y1)
+        self.line2.set_data(self.x, self.y2)
+        self.ax1.relim()
+        self.ax1.autoscale_view()
+        self.ax2.relim()
+        self.ax2.autoscale_view()
 
-        # 手动触发图形更新
         self.canvas.draw_idle()
 
-        # 定时更新图表
         self.master.after(100, self.update_plot)
 
 
-# 创建主窗口
+
 root = tk.Tk()
 
-# 创建 RealTimeSineWave 实例
-real_time_sine_wave = RealTimeSineWave(root)
 
-# 启动主循环
+input_value1 = 3
+input_value2 = 5
+
+
+real_time_dual_graphs = RealTimeDualGraphs(root, input_value1, input_value2)
+
+
 root.mainloop()
