@@ -86,14 +86,17 @@ def confirm():
         messagebox.showerror('Error', 'Username or password cannot be empty.')
         register_page.pack()
        # return
-    if username in users:
+    elif username in users:
         messagebox.showerror('Error', 'Username already exists.')
         register_page.pack()
-      #  return
+    elif ' ' in username or ' ' in password:
+        messagebox.showerror('Error', 'Username or password cannot contain space.')
+        register_page.pack()
+    else:
+        hashed_password = hashlib.sha256(password.encode()).hexdigest()
+        users[username] = hashed_password
+        save_users()
 
-    hashed_password = hashlib.sha256(password.encode()).hexdigest()
-    users[username] = hashed_password
-    save_users()
     new_username.delete(0, 'end')
     new_password.delete(0, 'end')
     register_page.pack_forget()
@@ -116,7 +119,12 @@ def login():
         messagebox.showerror('Error', 'Username or password cannot be empty.')
         login_page.pack()
         return
-    if username not in users:
+    if ' ' in username or ' ' in password:
+        messagebox.showerror('Error', 'Username or password cannot contain space.')
+        login_username.delete(0, 'end')
+        login_password.delete(0, 'end')
+        login_page.pack()
+    elif username not in users:
         messagebox.showerror('Error', 'User does not exist.')
         login_username.delete(0, 'end')
         login_password.delete(0, 'end')
