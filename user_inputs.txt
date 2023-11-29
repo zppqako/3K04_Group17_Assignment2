@@ -1,0 +1,4 @@
+lower limit rate:60.0 
+upper limit rate:150.0 
+atrial amplitude:5.0 
+atrial pulse width:2.0 

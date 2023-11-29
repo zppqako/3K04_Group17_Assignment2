@@ -8,7 +8,7 @@ import tkinter as tk
 import serial.tools.list_ports
 import struct
 from serial import Serial
-# from DCM_serial import test
+
 
 import customtkinter
 import hashlib
@@ -19,6 +19,9 @@ import time
 import threading
 import tkinter as tk
 #import usb.core
+
+#serial communication
+from DCM_serial import input
 
 customtkinter.set_appearance_mode("dark")
 customtkinter.set_default_color_theme("dark-blue")
@@ -220,8 +223,10 @@ def submit_aoo():
             file.write(f"upper limit rate:{aoo_url} \n")
             file.write(f"atrial amplitude:{aoo_aa} \n")
             file.write(f"atrial pulse width:{aoo_apw} \n")
+            input(aoo_lrl, aoo_url, aoo_aa, aoo_apw, 0, 0, 0, 0)
         if refresh() == 1:
             messagebox.showinfo("Success", "Successfully submit!")
+            
 
 def submit_voo():
     valid = True
@@ -1087,12 +1092,12 @@ def VVIR():
     VVIR_page.pack()
 def refresh():
     try:
-        ser = serial.Serial('COM3', 9600, timeout=0)
+        ser = serial.Serial('COM12', 115200)
         if ser.is_open:
             messagebox.showinfo("Success", "Communicating")
             return 1
     except:
-        messagebox.showerror("Error", "Serial port COM3 is not open")
+        messagebox.showerror("Error", "Serial port COM12 is not open")
         return 0
 def check():
     messagebox.showinfo("Success", "The pacemaker has been the same")
