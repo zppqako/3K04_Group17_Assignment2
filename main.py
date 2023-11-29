@@ -1164,7 +1164,7 @@ def submit_vvir():
             file.write(f"ventricular refactory period:{vvir_vrp} \n")
             file.write(f"ventricular sensitivity:{vvir_vs} \n")
             file.write(f"hysteresis:{vvir_h} \n")
-            file.write(f"rate smoothing:{vvvir_rs} \n")
+            file.write(f"rate smoothing:{vvir_rs} \n")
 
             file.write(f"maximum sensor rate:{vvir_msr} \n")
             file.write(f"activity threshold:{vvir_at} \n")
