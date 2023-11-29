@@ -458,7 +458,7 @@ def submit_vvi():
     # Verify the upper rate limit parameter
     try:
         vvi_url = float(vvi_url)
-        if(50 <= vvi_url <= 175) and (vvi_lrl %5 !=0):
+        if(50 <= vvi_url <= 175) and (vvi_url %5 !=0):
             # the input is out of range
             out_of_range = True
         elif not(50 <= vvi_url <= 175):
@@ -922,7 +922,7 @@ def submit_aair():
     else:
         try:
             aair_h = float(aair_h)
-            if not (((30<=aair_h<=50)and(30<=aair_h<=50)) or ((50<=aair_h<=90)and(50<=aair_h<=90)) or ((90<=aair_h<=175)and(90<=aair_h<=175))):
+            if not (((30<=aair_lrl<=50)and(30<=aair_h<=50)) or ((50<=aair_lrl<=90)and(50<=aair_h<=90)) or ((90<=aair_lrl<=175)and(90<=aair_h<=175))):
                 # the input is out of range
                 out_of_range = True
         except ValueError:
@@ -1105,7 +1105,7 @@ def submit_vvir():
     else:
         try:
             vvi_h = float(vvir_h)
-            if not (((30<=vvir_h<=50)and(30<=vvir_h<=50)) or ((50<=vvir_h<=90)and(50<=vvir_h<=90)) or ((90<=vvir_h<=175)and(90<=vvir_h<=175))):
+            if not (((30<=vvir_lrl<=50)and(30<=vvir_h<=50)) or ((50<=vvir_lrl<=90)and(50<=vvir_h<=90)) or ((90<=vvir_lrl<=175)and(90<=vvir_h<=175))):
                 # the input is out of range
                 out_of_range = True
         except ValueError:
@@ -1530,7 +1530,7 @@ VVI_label_VS.pack(pady=2, padx=10)
 VVI_VS = customtkinter.CTkEntry(master=VVI_page, placeholder_text="Ventricular Sensitivity")
 VVI_VS.pack(pady=2, padx=10)
 # Hysteresis
-VVI_label_H = customtkinter.CTkLabel(master=VVI_page, text="Hysteresis Rate Limit (range: 0 or same as LRL)")
+VVI_label_H = customtkinter.CTkLabel(master=VVI_page, text="Hysteresis Rate Limit (range: off or same as LRL)")
 VVI_label_H.pack(pady=2, padx=10)
 VVI_H = customtkinter.CTkEntry(master=VVI_page, placeholder_text="Hysteresis Rate Limit")
 VVI_H.pack(pady=2, padx=10)

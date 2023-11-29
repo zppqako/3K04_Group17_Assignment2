@@ -2,3 +2,8 @@ lower limit rate:60.0
 upper limit rate:150.0 
 atrial amplitude:100.0 
 atrial pulse width:2.0 
+maximum sensor rate:150.0 
+activity threshold:V-Low 
+reaction time:50.0 
+response factor:16.0 
+recovery time:2.0 
