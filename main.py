@@ -7,6 +7,7 @@ import time
 import threading
 import tkinter as tk
 #import usb.core
+from DCM_serial import serial
 
 customtkinter.set_appearance_mode("dark")
 customtkinter.set_default_color_theme("dark-blue")
@@ -211,6 +212,7 @@ def submit_aoo():
             file.write(f"upper limit rate:{aoo_url} \n")
             file.write(f"atrial amplitude:{aoo_aa} \n")
             file.write(f"atrial pulse width:{aoo_apw} \n")
+            serial(aoo_lrl, aoo_url, aoo_aa, aoo_apw, 0, 0, 0, 0)
         if refresh() == 1:
             messagebox.showinfo("Success", "Successfully submit!")
 
@@ -1217,7 +1219,7 @@ def VVIR():
     VVIR_page.pack()
 def refresh():
     try:
-        ser = serial.Serial('COM3', 9600, timeout=0)
+        ser = serial.Serial('COM12', 115200, timeout=0)
         if ser.is_open:
             messagebox.showinfo("Success", "Communicating")
             return 1

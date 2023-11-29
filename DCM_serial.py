@@ -10,53 +10,33 @@ from serial import Serial
 
 frdm_port = "COM12"
 
-Start = b'\x16'
-
-# second bit
-
-SYNC = b'\x22'
-
-Fn_set = b'\x55'
-
 ser = serial.Serial()
 # ser.baudrate = 115200
 # ser = serial.Serial('COM12', baudrate=115200)
 
-Start = b'\x16'
 
-# second bit
 
-SYNC = b'\x22'
+def serial(lrl, url, aa, apw, arp, factor, threshold, mode):
+    Start = b'\x16'
 
-Fn_set = b'\x55'
+    # second bit
 
-m_input = 4
-r_input = 100
-pw_input = 2
-aplitude_input = 100
-ref_period = 150
-# detect threshold
-threshold_input = 80
-max_input = 150
-factor_input = 30
+    SYNC = b'\x22'
 
-def test(Start, SYNC, Fn_set):
-
+    Fn_set = b'\x55'
     
-    mode = struct.pack("B", int(m_input))
+    mode = struct.pack("B", int(mode))
     # rate = struct.pack("BB", 0, 1)
-    rate = (r_input).to_bytes(2, byteorder='little')
-    pw = (pw_input).to_bytes(2, byteorder='little')
-    apl = (aplitude_input).to_bytes(2, byteorder='little')
-    #ref period
-    rp = (ref_period).to_bytes(2, byteorder='little')
-    #comp_pwm threshold
-    thre = (threshold_input).to_bytes(2, byteorder='little')
-    max = (max_input).to_bytes(2, byteorder='little')
-    factor = (factor_input).to_bytes(2, byteorder='little')
+    rate = (lrl*2).to_bytes(2, byteorder='little')
+    max = (url).to_bytes(2, byteorder='little')
+    apl = (aa).to_bytes(2, byteorder='little')
+    pw = (apw).to_bytes(2, byteorder='little')
+    rp = (arp).to_bytes(2, byteorder='little') #ref period
+    factor = (factor).to_bytes(2, byteorder='little')
+    thre = (threshold).to_bytes(2, byteorder='little') #comp_pwm threshold
     
     
-    signal_echo = Start + Fn_set + mode + rate+ pw + apl + rp+ thre + max + factor
+    signal_echo = Start + Fn_set + mode + rate + pw + apl + rp+ thre + max + factor
     print("test: ", signal_echo)
 
     with serial.Serial(frdm_port, 115200) as pacemaker:
@@ -64,5 +44,3 @@ def test(Start, SYNC, Fn_set):
         pacemaker.write(signal_echo)
 
     
-        
-test()
