@@ -853,7 +853,7 @@ def submit_aair():
             out_of_range = True
         elif(90 < aair_lrl <= 175) and(aair_lrl % 5 !=0):
             out_of_range = True
-        elif not (30<= aair_lrl <=175):
+        elif not (30 <= aair_lrl <= 175):
             out_of_range = True
     except ValueError:
         # the input is not a number
@@ -907,7 +907,7 @@ def submit_aair():
         aair_as = float(aair_as)
         if (0 <=aair_as<= 100) and (aair_as %2 !=0):
             out_of_range = True
-        elif (0 <=aair_as<= 100):
+        elif not (0 <=aair_as<= 100):
             out_of_range = True
     except ValueError:
         invalid_input = True
@@ -927,7 +927,7 @@ def submit_aair():
     else:
         try:
             aair_h = float(aair_h)
-            if not (((30<=aair_lrl<=50)and(30<=aair_h<=50)) or ((50<=aair_lrl<=90)and(50<=aair_h<=90)) or ((90<=aair_lrl<=175)and(90<=aair_h<=175))):
+            if not (((30<=aair_h<=50)and(30<=aair_h<=50)) or ((50<=aair_h<=90)and(50<=aair_h<=90)) or ((90<=aair_h<=175)and(90<=aair_h<=175))):
                 # the input is out of range
                 out_of_range = True
         except ValueError:
@@ -980,7 +980,7 @@ def submit_aair():
     # Verify the Recovery Time
     try:
         aair_recoveryT= float(aair_recoveryT)
-        if  (2 <= aair_recoveryT <= 16) and (aair_recoveryT %1 !=0):
+        if (2 <= aair_recoveryT <= 16) and (aair_recoveryT %1 !=0):
             # the input is out of range
             out_of_range = True
         elif not (2 <= aair_recoveryT <= 16):
@@ -989,7 +989,7 @@ def submit_aair():
         # the input is not a number
         invalid_input = True
     # Verify the Recovery Time
-    if aair_at not in ["V-Low","Low","Med-Low","Med","Med-High","High","V-high"]:
+    if aair_at not in ["V-Low","Low","Med-Low","Med","Med-High","High","V-High"]:
         invalid_input = True
     if invalid_input:
         messagebox.showerror("Error", "Please entry a valid parameter")
@@ -1110,7 +1110,7 @@ def submit_vvir():
     else:
         try:
             vvi_h = float(vvir_h)
-            if not (((30<=vvir_lrl<=50)and(30<=vvir_h<=50)) or ((50<=vvir_lrl<=90)and(50<=vvir_h<=90)) or ((90<=vvir_lrl<=175)and(90<=vvir_h<=175))):
+            if not (((30<=vvir_h<=50)and(30<=vvir_h<=50)) or ((50<=vvir_h<=90)and(50<=vvir_h<=90)) or ((90<=vvir_h<=175)and(90<=vvir_h<=175))):
                 # the input is out of range
                 out_of_range = True
         except ValueError:
@@ -1131,7 +1131,7 @@ def submit_vvir():
     # Verify the Reaction Time
     try:
         vvir_reactionT = float(vvir_reactionT)
-        if (10 <= vvir_reactionT <= 50) and (vvir_recoveryT %10 != 0):
+        if (10 <= vvir_reactionT <= 50) and (vvir_reactionT %10 != 0):
             # the input is out of range
             out_of_range = True
         elif not (10 <= vvir_reactionT <= 50):
@@ -1162,7 +1162,7 @@ def submit_vvir():
         # the input is not a number
         invalid_input = True
     # Verify the Recovery Time
-    if vvir_at not in ["V-Low","Low","Med-Low","Med","Med-High","High","V-high"]:
+    if vvir_at not in ["V-Low","Low","Med-Low","Med","Med-High","High","V-High"]:
         invalid_input = True
     #Verify the Rate Smoothing
     if vvir_rs == 'off':
@@ -1242,12 +1242,12 @@ def VVIR():
     VVIR_page.pack()
 def refresh():
     try:
-        ser = serial.Serial('COM12', 115200)
+        ser = serial.Serial('COM3', 115200)
         if ser.is_open:
             messagebox.showinfo("Success", "Communicating")
             return 1
     except:
-        messagebox.showerror("Error", "Serial port COM12 is not open")
+        messagebox.showerror("Error", "Serial port COM3 is not open")
         return 0
 def check():
     messagebox.showinfo("Success", "The pacemaker has been the same")
@@ -1347,22 +1347,22 @@ AOO_page.pack(pady=10, padx=60)#, fill="both", expand = True)
 AOO_label = customtkinter.CTkLabel(master=AOO_page, text="Please Enter Parameters for AOO")
 AOO_label.pack(pady=6, padx=10)
 # Lower Rate Limit
-AOO_label_LRL = customtkinter.CTkLabel(master=AOO_page, text="Lower Rate Limit (range: 30-175)")
+AOO_label_LRL = customtkinter.CTkLabel(master=AOO_page, text="Lower Rate Limit (range: 30-50 with increment 5, 50-90 with increment 1, 90-175 with increment 5)")
 AOO_label_LRL.pack(pady=6, padx=10)
 AOO_LRL = customtkinter.CTkEntry(master=AOO_page, placeholder_text="Lower Rate Limit")
 AOO_LRL.pack(pady=6, padx=10)
 # Upper Rate Limit
-AOO_label_URL = customtkinter.CTkLabel(master=AOO_page, text="Upper Rate Limit (range: 50-175)")
+AOO_label_URL = customtkinter.CTkLabel(master=AOO_page, text="Upper Rate Limit (range: 50-175 with increment 5)")
 AOO_label_URL.pack(pady=6, padx=10)
 AOO_URL = customtkinter.CTkEntry(master=AOO_page, placeholder_text="Upper Rate Limit")
 AOO_URL.pack(pady=6, padx=10)
 # Atrial Amplitude
-AOO_label_AA = customtkinter.CTkLabel(master=AOO_page, text="Atrial Amplitude (range: 0-100)")
+AOO_label_AA = customtkinter.CTkLabel(master=AOO_page, text="Atrial Amplitude (range: 0-100 with increment 2)")
 AOO_label_AA.pack(pady=6, padx=10)
 AOO_AA = customtkinter.CTkEntry(master=AOO_page, placeholder_text="Atrial Amplitude")
 AOO_AA.pack(pady=6, padx=10)
 # Atrial Amplitude
-AOO_label_APW = customtkinter.CTkLabel(master=AOO_page, text="Arial Pulse Width (range: 1-30)")
+AOO_label_APW = customtkinter.CTkLabel(master=AOO_page, text="Arial Pulse Width (range: 1-30 with increment 1)")
 AOO_label_APW.pack(pady=6, padx=10)
 AOO_APW = customtkinter.CTkEntry(master=AOO_page, placeholder_text="Arial Pulse Width")
 AOO_APW.pack(pady=6, padx=10)
@@ -1390,22 +1390,22 @@ VOO_page.pack(pady=10, padx=60)#, fill="both", expand = True)
 VOO_label = customtkinter.CTkLabel(master=VOO_page, text="Please Enter Parameters for VOO")
 VOO_label.pack(pady=6, padx=10)
 # Lower Rate Limit
-VOO_label_LRL = customtkinter.CTkLabel(master=VOO_page, text="Lower Rate Limit (range: 30-175)")
+VOO_label_LRL = customtkinter.CTkLabel(master=VOO_page, text="Lower Rate Limit (range: 30-50 with increment 5, 50-90 with increment 1, 90-175 with increment 5)")
 VOO_label_LRL.pack(pady=6, padx=10)
 VOO_LRL = customtkinter.CTkEntry(master=VOO_page, placeholder_text="Lower Rate Limit")
 VOO_LRL.pack(pady=6, padx=10)
 # Upper Rate Limit
-VOO_label_URL = customtkinter.CTkLabel(master=VOO_page, text="Upper Rate Limit (range: 50-175)")
+VOO_label_URL = customtkinter.CTkLabel(master=VOO_page, text="Upper Rate Limit (range: 50-175 with increment 5)")
 VOO_label_URL.pack(pady=6, padx=10)
 VOO_URL = customtkinter.CTkEntry(master=VOO_page, placeholder_text="Upper Rate Limit")
 VOO_URL.pack(pady=6, padx=10)
 # Ventricular Amplitude
-VOO_label_VA = customtkinter.CTkLabel(master=VOO_page, text="Ventricular Amplitude (range: 0-100)")
+VOO_label_VA = customtkinter.CTkLabel(master=VOO_page, text="Ventricular Amplitude (range: 0-100 with increment 2)")
 VOO_label_VA.pack(pady=6, padx=10)
 VOO_VA = customtkinter.CTkEntry(master=VOO_page, placeholder_text="Ventricular Amplitude")
 VOO_VA.pack(pady=6, padx=10)
 # Ventricular Amplitude
-VOO_label_VPW = customtkinter.CTkLabel(master=VOO_page, text="Ventricular Pulse Width (range: 1-30)")
+VOO_label_VPW = customtkinter.CTkLabel(master=VOO_page, text="Ventricular Pulse Width (range: 1-30 with increment 1)")
 VOO_label_VPW.pack(pady=6, padx=10)
 VOO_VPW = customtkinter.CTkEntry(master=VOO_page, placeholder_text="Ventricular Pulse Width")
 VOO_VPW.pack(pady=6, padx=10)
@@ -1430,47 +1430,47 @@ AAI_page.pack(pady=6, padx=60)#, fill="both", expand = True)
 AAI_label = customtkinter.CTkLabel(master=AAI_page, text="Please Enter Parameters for AAI")
 AAI_label.pack(pady=2, padx=10)
 # Lower Rate Limit
-AAI_label_LRL = customtkinter.CTkLabel(master=AAI_page, text="Lower Rate Limit (range: 30-175)")
+AAI_label_LRL = customtkinter.CTkLabel(master=AAI_page, text="Lower Rate Limit (range: 30-50 with increment 5, 50-90 with increment 1, 90-175 with increment 5)")
 AAI_label_LRL.pack(pady=2, padx=10)
 AAI_LRL = customtkinter.CTkEntry(master=AAI_page, placeholder_text="Lower Rate Limit")
 AAI_LRL.pack(pady=2, padx=10)
 # Upper Rate Limit
-AAI_label_URL = customtkinter.CTkLabel(master=AAI_page, text="Upper Rate Limit (range: 50-175)")
+AAI_label_URL = customtkinter.CTkLabel(master=AAI_page, text="Upper Rate Limit (range: 50-175 with increment 5)")
 AAI_label_URL.pack(pady=2, padx=10)
 AAI_URL = customtkinter.CTkEntry(master=AAI_page, placeholder_text="Upper Rate Limit")
 AAI_URL.pack(pady=2, padx=10)
 # Atrial Amplitude
-AAI_label_AA = customtkinter.CTkLabel(master=AAI_page, text="Atrial Amplitude (range: 0-100)")
+AAI_label_AA = customtkinter.CTkLabel(master=AAI_page, text="Atrial Amplitude (range: 0-100 with increment 2)")
 AAI_label_AA.pack(pady=2, padx=10)
 AAI_AA = customtkinter.CTkEntry(master=AAI_page, placeholder_text="Atrial Amplitude")
 AAI_AA.pack(pady=2, padx=10)
 # Atrial Pulse Width
-AAI_label_APW = customtkinter.CTkLabel(master=AAI_page, text="Atrial Pulse Width (range: 1-30)")
+AAI_label_APW = customtkinter.CTkLabel(master=AAI_page, text="Atrial Pulse Width (range: 1-30 with increment 1)")
 AAI_label_APW.pack(pady=2, padx=10)
 AAI_APW = customtkinter.CTkEntry(master=AAI_page, placeholder_text="Atrial Pulse Width")
 AAI_APW.pack(pady=2, padx=10)
 # ARP
-AAI_label_ARP = customtkinter.CTkLabel(master=AAI_page, text="ARP (range: 150-500)")
+AAI_label_ARP = customtkinter.CTkLabel(master=AAI_page, text="ARP (range: 150-500 with increment 10)")
 AAI_label_ARP.pack(pady=2, padx=10)
 AAI_ARP = customtkinter.CTkEntry(master=AAI_page, placeholder_text="ARP")
 AAI_ARP.pack(pady=2, padx=10)
 # Atrial sensitivity
-AAI_label_AS = customtkinter.CTkLabel(master=AAI_page, text="Atrial Sensitivity (range: 0-5)")
+AAI_label_AS = customtkinter.CTkLabel(master=AAI_page, text="Atrial Sensitivity (range: 0-100 with increment 2")
 AAI_label_AS.pack(pady=2, padx=10)
 AAI_AS = customtkinter.CTkEntry(master=AAI_page, placeholder_text="Atrial Sensitivity")
 AAI_AS.pack(pady=2, padx=10)
 # PVARP
-AAI_label_PVARP = customtkinter.CTkLabel(master=AAI_page, text="PVARP (range: 150-500)")
+AAI_label_PVARP = customtkinter.CTkLabel(master=AAI_page, text="PVARP (range: 150-500 with increment 10)")
 AAI_label_PVARP.pack(pady=2, padx=10)
 AAI_PVARP = customtkinter.CTkEntry(master=AAI_page, placeholder_text="PVARP")
 AAI_PVARP.pack(pady=2, padx=10)
 # Hysteresis
-AAI_label_H = customtkinter.CTkLabel(master=AAI_page, text="Hysteresis Rate Limit (range: Off or same as LRL)")
+AAI_label_H = customtkinter.CTkLabel(master=AAI_page, text="Hysteresis Rate Limit (range: off or same as LRL)")
 AAI_label_H.pack(pady=2, padx=10)
 AAI_H = customtkinter.CTkEntry(master=AAI_page, placeholder_text="Hysteresis Rate Limit")
 AAI_H.pack(pady=2, padx=10)
 # Rate Smoothing
-AAI_label_RS = customtkinter.CTkLabel(master=AAI_page, text="Rate Smoothing (range: Off, 3, 6, 9, 12, 15,18,21, 25)")
+AAI_label_RS = customtkinter.CTkLabel(master=AAI_page, text="Rate Smoothing (range: off, 3, 6, 9, 12, 15,18,21, 25)")
 AAI_label_RS.pack(pady=2, padx=10)
 AAI_RS = customtkinter.CTkEntry(master=AAI_page, placeholder_text="Rate Smoothing")
 AAI_RS.pack(pady=2, padx=10)
@@ -1493,32 +1493,32 @@ VVI_page.pack(pady=10, padx=60)#, fill="both", expand = True)
 VVI_label = customtkinter.CTkLabel(master=VVI_page, text="Please Enter Parameters for VVI")
 VVI_label.pack(pady=2, padx=10)
 # Lower Rate Limit
-VVI_label_LRL = customtkinter.CTkLabel(master=VVI_page, text="Lower Rate Limit (range: 30-175)")
+VVI_label_LRL = customtkinter.CTkLabel(master=VVI_page, text="Lower Rate Limit (range: 30-50 with increment 5, 50-90 with increment 1, 90-175 with increment 5)")
 VVI_label_LRL.pack(pady=2, padx=10)
 VVI_LRL = customtkinter.CTkEntry(master=VVI_page, placeholder_text="Lower Rate Limit")
 VVI_LRL.pack(pady=2, padx=10)
 # Upper Rate Limit
-VVI_label_URL = customtkinter.CTkLabel(master=VVI_page, text="Upper Rate Limit (range: 50-175)")
+VVI_label_URL = customtkinter.CTkLabel(master=VVI_page, text="Upper Rate Limit (range: 50-175 with increment 5)")
 VVI_label_URL.pack(pady=2, padx=10)
 VVI_URL = customtkinter.CTkEntry(master=VVI_page, placeholder_text="Upper Rate Limit")
 VVI_URL.pack(pady=2, padx=10)
 # Ventricular Amplitude
-VVI_label_VA = customtkinter.CTkLabel(master=VVI_page, text="Ventricular Amplitude (range: 0-100)")
+VVI_label_VA = customtkinter.CTkLabel(master=VVI_page, text="Ventricular Amplitude (range: 0-100 with increment 2)")
 VVI_label_VA.pack(pady=2, padx=10)
 VVI_VA = customtkinter.CTkEntry(master=VVI_page, placeholder_text="Ventricular Amplitude")
 VVI_VA.pack(pady=2, padx=10)
 #   Ventricular Pulse Width
-VVI_label_VPW = customtkinter.CTkLabel(master=VVI_page, text="Ventricular Pulse Width (range: 1-30)")
+VVI_label_VPW = customtkinter.CTkLabel(master=VVI_page, text="Ventricular Pulse Width (range: 1-30 with increment 1)")
 VVI_label_VPW.pack(pady=2, padx=10)
 VVI_VPW = customtkinter.CTkEntry(master=VVI_page, placeholder_text="Ventricular Pulse Width")
 VVI_VPW.pack(pady=2, padx=10)
 # VRP
-VVI_label_VRP = customtkinter.CTkLabel(master=VVI_page, text="VRP (range: 150-500)")
+VVI_label_VRP = customtkinter.CTkLabel(master=VVI_page, text="VRP (range: 150-500 with increment 10)")
 VVI_label_VRP.pack(pady=2, padx=10)
 VVI_VRP = customtkinter.CTkEntry(master=VVI_page, placeholder_text="VRP")
 VVI_VRP.pack(pady=2, padx=10)
 #Ventricular Sensitivity
-VVI_label_VS = customtkinter.CTkLabel(master=VVI_page, text="Ventricular Sensitivity (range: 0-5)")
+VVI_label_VS = customtkinter.CTkLabel(master=VVI_page, text="Ventricular Sensitivity (range: 0-100 with increment 2)")
 VVI_label_VS.pack(pady=2, padx=10)
 VVI_VS = customtkinter.CTkEntry(master=VVI_page, placeholder_text="Ventricular Sensitivity")
 VVI_VS.pack(pady=2, padx=10)
@@ -1528,7 +1528,7 @@ VVI_label_H.pack(pady=2, padx=10)
 VVI_H = customtkinter.CTkEntry(master=VVI_page, placeholder_text="Hysteresis Rate Limit")
 VVI_H.pack(pady=2, padx=10)
 #Rate Smoothing
-VVI_label_RS = customtkinter.CTkLabel(master=VVI_page, text="Rate Smoothing (range: Off, 3, 6, 9, 12, 15,18,21, 25)")
+VVI_label_RS = customtkinter.CTkLabel(master=VVI_page, text="Rate Smoothing (range: off, 3, 6, 9, 12, 15,18,21, 25)")
 VVI_label_RS.pack(pady=2, padx=10)
 VVI_RS = customtkinter.CTkEntry(master=VVI_page, placeholder_text="Rate Smoothing")
 VVI_RS.pack(pady=2, padx=10)
@@ -1549,27 +1549,27 @@ AOOR_page.pack(pady=2, padx=60)#, fill="both", expand = True)
 AOOR_label = customtkinter.CTkLabel(master=AOOR_page, text="Please Enter Parameters for AOOR")
 AOOR_label.pack(pady=1, padx=10)
 # Lower Rate Limit
-AOOR_label_LRL = customtkinter.CTkLabel(master=AOOR_page, text="LRL (range: 30-175)")
+AOOR_label_LRL = customtkinter.CTkLabel(master=AOOR_page, text="LRL (range: 30-50 with increment 5, 50-90 with increment 1, 90-175 with increment 5)")
 AOOR_label_LRL.pack(pady=1, padx=10)
 AOOR_LRL = customtkinter.CTkEntry(master=AOOR_page, placeholder_text="Lower Rate Limit")
 AOOR_LRL.pack(pady=1, padx=10)
 # Upper Rate Limit
-AOOR_label_URL = customtkinter.CTkLabel(master=AOOR_page, text="URL (range: 50-175)")
+AOOR_label_URL = customtkinter.CTkLabel(master=AOOR_page, text="URL (range: 50-175 with increment 5)")
 AOOR_label_URL.pack(pady=1, padx=10)
 AOOR_URL = customtkinter.CTkEntry(master=AOOR_page, placeholder_text="Upper Rate Limit")
 AOOR_URL.pack(pady=1, padx=10)
 # Maximum Sensor Rate
-AOOR_label_MSR = customtkinter.CTkLabel(master=AOOR_page, text="MSR (range: 50-175)")
+AOOR_label_MSR = customtkinter.CTkLabel(master=AOOR_page, text="MSR (range: 50-175 with increment 5)")
 AOOR_label_MSR.pack(pady=1, padx=10)
 AOOR_MSR = customtkinter.CTkEntry(master=AOOR_page, placeholder_text="Maximum Sensor Rate")
 AOOR_MSR.pack(pady=1, padx=10)
 # Atrial Amplitude
-AOOR_label_AA = customtkinter.CTkLabel(master=AOOR_page, text="Atrial Amplitude (range: 0-100)")
+AOOR_label_AA = customtkinter.CTkLabel(master=AOOR_page, text="Atrial Amplitude (range: 0-100 with increment 2)")
 AOOR_label_AA.pack(pady=1, padx=10)
 AOOR_AA = customtkinter.CTkEntry(master=AOOR_page, placeholder_text="Atrial Amplitude")
 AOOR_AA.pack(pady=1, padx=10)
 # Atrial Pulse Width
-AOOR_label_APW = customtkinter.CTkLabel(master=AOOR_page, text="Atrial Pulse Width (range: 1-30)")
+AOOR_label_APW = customtkinter.CTkLabel(master=AOOR_page, text="Atrial Pulse Width (range: 1-30 with increment 1)")
 AOOR_label_APW.pack(pady=1, padx=10)
 AOOR_APW = customtkinter.CTkEntry(master=AOOR_page, placeholder_text="Atrial Pulse Width")
 AOOR_APW.pack(pady=1, padx=10)
@@ -1579,17 +1579,17 @@ AOOR_label_AT.pack(pady=1, padx=10)
 AOOR_AT = customtkinter.CTkEntry(master=AOOR_page, placeholder_text="Atrial Activity Threshold")
 AOOR_AT.pack(pady=1, padx=10)
 # Reaction Time
-AOOR_label_ReactionT = customtkinter.CTkLabel(master=AOOR_page, text="Reaction Time (range: 10-50)")
+AOOR_label_ReactionT = customtkinter.CTkLabel(master=AOOR_page, text="Reaction Time (range: 10-50 with increment 10)")
 AOOR_label_ReactionT.pack(pady=1, padx=10)
 AOOR_ReactionT = customtkinter.CTkEntry(master=AOOR_page, placeholder_text="Reaction Time")
 AOOR_ReactionT.pack(pady=1, padx=10)
 # Response Factor
-AOOR_label_RF = customtkinter.CTkLabel(master=AOOR_page, text="Response Factor (range: 1-16)")
+AOOR_label_RF = customtkinter.CTkLabel(master=AOOR_page, text="Response Factor (range: 1-16 with increment 1)")
 AOOR_label_RF.pack(pady=1, padx=10)
 AOOR_RF = customtkinter.CTkEntry(master=AOOR_page, placeholder_text="Response Factor")
 AOOR_RF.pack(pady=1, padx=10)
 #Recovery Time
-AOOR_label_RecoveryT = customtkinter.CTkLabel(master=AOOR_page, text="Recovery Time (range: 2-16)")
+AOOR_label_RecoveryT = customtkinter.CTkLabel(master=AOOR_page, text="Recovery Time (range: 2-16 with increment 1)")
 AOOR_label_RecoveryT.pack(pady=1, padx=10)
 AOOR_RecoveryT = customtkinter.CTkEntry(master=AOOR_page, placeholder_text="Recovery Time")
 AOOR_RecoveryT.pack(pady=1, padx=10)
@@ -1611,27 +1611,27 @@ VOOR_page.pack(pady=11, padx=60)#, fill="both", expand = True)
 VOOR_label = customtkinter.CTkLabel(master=VOOR_page, text="Please Enter Parameters for VOOR")
 VOOR_label.pack(pady=1, padx=10)
 # Lower Rate Limit
-VOOR_label_LRL = customtkinter.CTkLabel(master=VOOR_page, text="Lower Rate Limit (range: 30-175)")
+VOOR_label_LRL = customtkinter.CTkLabel(master=VOOR_page, text="Lower Rate Limit (range: 30-50 with increment 5, 50-90 with increment 1, 90-175 with increment 5)")
 VOOR_label_LRL.pack(pady=1, padx=10)
 VOOR_LRL = customtkinter.CTkEntry(master=VOOR_page, placeholder_text="Lower Rate Limit")
 VOOR_LRL.pack(pady=1, padx=10)
 # Upper Rate Limit
-VOOR_label_URL = customtkinter.CTkLabel(master=VOOR_page, text="Upper Rate Limit (range: 50-175)")
+VOOR_label_URL = customtkinter.CTkLabel(master=VOOR_page, text="Upper Rate Limit (range: 50-175 with increment 5)")
 VOOR_label_URL.pack(pady=1, padx=10)
 VOOR_URL = customtkinter.CTkEntry(master=VOOR_page, placeholder_text="Upper Rate Limit")
 VOOR_URL.pack(pady=1, padx=10)
 # Ventricular Amplitude
-VOOR_label_VA = customtkinter.CTkLabel(master=VOOR_page, text="Ventricular Amplitude (range: 0-100)")
+VOOR_label_VA = customtkinter.CTkLabel(master=VOOR_page, text="Ventricular Amplitude (range: 0-100 with increment 2)")
 VOOR_label_VA.pack(pady=1, padx=10)
 VOOR_VA = customtkinter.CTkEntry(master=VOOR_page, placeholder_text="Ventricular Amplitude")
 VOOR_VA.pack(pady=1, padx=10)
 # Ventricular Pulse Width
-VOOR_label_VPW = customtkinter.CTkLabel(master=VOOR_page, text="Ventricular Pulse Width (range: 1-30)")
+VOOR_label_VPW = customtkinter.CTkLabel(master=VOOR_page, text="Ventricular Pulse Width (range: 1-30 with increment 1)")
 VOOR_label_VPW.pack(pady=1, padx=10)
 VOOR_VPW = customtkinter.CTkEntry(master=VOOR_page, placeholder_text="Ventricular Pulse Width")
 VOOR_VPW.pack(pady=1, padx=10)
 # Maximum Sensor Rate
-VOOR_label_MSR = customtkinter.CTkLabel(master=VOOR_page, text="MSR (range: 50-175)")
+VOOR_label_MSR = customtkinter.CTkLabel(master=VOOR_page, text="MSR (range: 50-175 with increment 5)")
 VOOR_label_MSR.pack(pady=1, padx=10)
 VOOR_MSR = customtkinter.CTkEntry(master=VOOR_page, placeholder_text="Maximum Sensor Rate")
 VOOR_MSR.pack(pady=1, padx=10)
@@ -1641,22 +1641,22 @@ VOOR_label_AT.pack(pady=1, padx=10)
 VOOR_AT = customtkinter.CTkEntry(master=VOOR_page, placeholder_text="Atrial Activity Threshold")
 VOOR_AT.pack(pady=1, padx=10)
 # Reaction Time
-VOOR_label_ReactionT = customtkinter.CTkLabel(master=VOOR_page, text="Reaction Time (range: 10-50)")
+VOOR_label_ReactionT = customtkinter.CTkLabel(master=VOOR_page, text="Reaction Time (range: 10-50 with increment 10)")
 VOOR_label_ReactionT.pack(pady=1, padx=10)
 VOOR_ReactionT = customtkinter.CTkEntry(master=VOOR_page, placeholder_text="Reaction Time")
 VOOR_ReactionT.pack(pady=1, padx=10)
 # Response Factor
-VOOR_label_RF = customtkinter.CTkLabel(master=VOOR_page, text="Response Factor (range: 1-16)")
+VOOR_label_RF = customtkinter.CTkLabel(master=VOOR_page, text="Response Factor (range: 1-16 with increment 1)")
 VOOR_label_RF.pack(pady=1, padx=10)
 VOOR_RF = customtkinter.CTkEntry(master=VOOR_page, placeholder_text="Response Factor")
 VOOR_RF.pack(pady=1, padx=10)
 #Recovery Time
-VOOR_label_RecoveryT = customtkinter.CTkLabel(master=VOOR_page, text="Recovery Time (range: 2-16)")
+VOOR_label_RecoveryT = customtkinter.CTkLabel(master=VOOR_page, text="Recovery Time (range: 2-16 with increment 1)")
 VOOR_label_RecoveryT.pack(pady=1, padx=10)
 VOOR_RecoveryT = customtkinter.CTkEntry(master=VOOR_page, placeholder_text="Recovery Time")
 VOOR_RecoveryT.pack(pady=1, padx=10)
 #submit
-submit_voor = customtkinter.CTkButton(master = VOOR_page, text="Submit", command=submit_voo)
+submit_voor = customtkinter.CTkButton(master = VOOR_page, text="Submit", command=submit_voor)
 submit_voor.pack(pady=6, padx=10)
 #back to mode page from AOO
 back_voor_button = customtkinter.CTkButton(master=VOOR_page, text="Back", command = back_button)
@@ -1670,55 +1670,55 @@ log_out.pack(pady=6, padx=10)
 AAIR_page = customtkinter.CTkFrame(master=root)
 AAIR_page.pack(pady=0, padx=60)#, fill="both", expand = True)
 # output a label
-AAIR_label = customtkinter.CTkLabel(master=AAIR_page, text="Please Enter Parameters for AAIR")
+AAIR_label = customtkinter.CTkLabel(master=AAIR_page, text="AAIR")
 AAIR_label.grid(row=0, column=0, ipadx=5, ipady=5)
 # Lower Rate Limit
-AAIR_label_LRL = customtkinter.CTkLabel(master=AAIR_page, text="Lower Rate Limit (range: 30-175)")
+AAIR_label_LRL = customtkinter.CTkLabel(master=AAIR_page, text="Lower Rate Limit (range: 30-50 with increment 5, 50-90 with increment 1, 90-175 with increment 5)")
 AAIR_label_LRL.grid(row=1, column=0, ipadx=5, ipady=5)
 AAIR_LRL = customtkinter.CTkEntry(master=AAIR_page, placeholder_text="Lower Rate Limit")
 AAIR_LRL.grid(row=1, column=1, ipadx=5, ipady=5)
 # Upper Rate Limit
-AAIR_label_URL = customtkinter.CTkLabel(master=AAIR_page, text="Upper Rate Limit (range: 50-175)")
+AAIR_label_URL = customtkinter.CTkLabel(master=AAIR_page, text="Upper Rate Limit (range: 50-175 with increment 5)")
 AAIR_label_URL.grid(row=2, column=0, ipadx=5, ipady=5)
 AAIR_URL = customtkinter.CTkEntry(master=AAIR_page, placeholder_text="Upper Rate Limit")
 AAIR_URL.grid(row=2, column=1, ipadx=5, ipady=5)
 # Atrial Amplitude
-AAIR_label_AA = customtkinter.CTkLabel(master=AAIR_page, text="Atrial Amplitude (range:0-100)")
+AAIR_label_AA = customtkinter.CTkLabel(master=AAIR_page, text="Atrial Amplitude (range:0-100 with increment 2)")
 AAIR_label_AA.grid(row=3, column=0, ipadx=5, ipady=5)
 AAIR_AA = customtkinter.CTkEntry(master=AAIR_page, placeholder_text="Atrial Amplitude")
 AAIR_AA.grid(row=3, column=1, ipadx=5, ipady=5)
 # Atrial Pulse Width
-AAIR_label_APW = customtkinter.CTkLabel(master=AAIR_page, text="Atrial Pulse Width (range: 1-30)")
+AAIR_label_APW = customtkinter.CTkLabel(master=AAIR_page, text="Atrial Pulse Width (range: 1-30 with increment 1)")
 AAIR_label_APW.grid(row=4, column=0, ipadx=5, ipady=5)
 AAIR_APW = customtkinter.CTkEntry(master=AAIR_page, placeholder_text="Atrial Pulse Width")
 AAIR_APW.grid(row=4, column=1, ipadx=5, ipady=5)
 # ARP
-AAIR_label_ARP = customtkinter.CTkLabel(master=AAIR_page, text="ARP (range: 150-500)")
+AAIR_label_ARP = customtkinter.CTkLabel(master=AAIR_page, text="ARP (range: 150-500 with increment 10)")
 AAIR_label_ARP.grid(row=5, column=0, ipadx=5, ipady=5)
 AAIR_ARP = customtkinter.CTkEntry(master=AAIR_page, placeholder_text="ARP")
 AAIR_ARP.grid(row=5, column=1, ipadx=5, ipady=5)
 # Atrial sensitivity
-AAIR_label_AS = customtkinter.CTkLabel(master=AAIR_page, text="Atrial Sensitivity (range: 0-5)")
+AAIR_label_AS = customtkinter.CTkLabel(master=AAIR_page, text="Atrial Sensitivity (range: 0-100 with increment 2)")
 AAIR_label_AS.grid(row=6, column=0, ipadx=5, ipady=5)
 AAIR_AS = customtkinter.CTkEntry(master=AAIR_page, placeholder_text="Atrial Sensitivity")
 AAIR_AS.grid(row=6, column=1, ipadx=5, ipady=5)
 # PVARP
-AAIR_label_PVARP = customtkinter.CTkLabel(master=AAIR_page, text="PVARP (range: 150-500)")
+AAIR_label_PVARP = customtkinter.CTkLabel(master=AAIR_page, text="PVARP (range: 150-500 with increment 10)")
 AAIR_label_PVARP.grid(row=7, column=0, ipadx=5, ipady=5)
 AAIR_PVARP = customtkinter.CTkEntry(master=AAIR_page, placeholder_text="PVARP")
 AAIR_PVARP.grid(row=7, column=1, ipadx=5, ipady=5)
 # Hysteresis
-AAIR_label_H = customtkinter.CTkLabel(master=AAIR_page, text="Hysteresis Rate Limit (range: Off or same as LRL)")
+AAIR_label_H = customtkinter.CTkLabel(master=AAIR_page, text="Hysteresis Rate Limit (range: off or same as LRL)")
 AAIR_label_H.grid(row=8, column=0, ipadx=5, ipady=5)
 AAIR_H = customtkinter.CTkEntry(master=AAIR_page, placeholder_text="Hysteresis Rate Limit")
 AAIR_H.grid(row=8, column=1, ipadx=5, ipady=5)
 # Rate Smoothing
-AAIR_label_RS = customtkinter.CTkLabel(master=AAIR_page, text="Rate Smoothing (range: Off, 3, 6, 9, 12, 15,18,21, 25)")
+AAIR_label_RS = customtkinter.CTkLabel(master=AAIR_page, text="Rate Smoothing (range: off, 3, 6, 9, 12, 15,18,21, 25)")
 AAIR_label_RS.grid(row=9, column=0, ipadx=5, ipady=5)
 AAIR_RS = customtkinter.CTkEntry(master=AAIR_page, placeholder_text="Rate Smoothing")
 AAIR_RS.grid(row=9, column=1, ipadx=5, ipady=5)
 # Maximum Sensor Rate
-AAIR_label_MSR = customtkinter.CTkLabel(master=AAIR_page, text="MSR (range: 50-175)")
+AAIR_label_MSR = customtkinter.CTkLabel(master=AAIR_page, text="MSR (range: 50-175 with increment 5)")
 AAIR_label_MSR.grid(row=10, column=0, ipadx=5, ipady=5)
 AAIR_MSR = customtkinter.CTkEntry(master=AAIR_page, placeholder_text="Maximum Sensor Rate")
 AAIR_MSR.grid(row=10, column=1, ipadx=5, ipady=5)
@@ -1728,17 +1728,17 @@ AAIR_label_AT.grid(row=11, column=0, ipadx=5, ipady=5)
 AAIR_AT = customtkinter.CTkEntry(master=AAIR_page, placeholder_text="Atrial Activity Threshold")
 AAIR_AT.grid(row=11, column=1, ipadx=5, ipady=5)
 # Reaction Time
-AAIR_label_ReactionT = customtkinter.CTkLabel(master=AAIR_page, text="Reaction Time (range: 10-50)")
+AAIR_label_ReactionT = customtkinter.CTkLabel(master=AAIR_page, text="Reaction Time (range: 10-50 with increment 10)")
 AAIR_label_ReactionT.grid(row=12, column=0, ipadx=5, ipady=5)
 AAIR_ReactionT = customtkinter.CTkEntry(master=AAIR_page, placeholder_text="Reaction Time")
 AAIR_ReactionT.grid(row=12, column=1, ipadx=5, ipady=5)
 # Response Factor
-AAIR_label_RF = customtkinter.CTkLabel(master=AAIR_page, text="Response Factor (range: 1-16)")
+AAIR_label_RF = customtkinter.CTkLabel(master=AAIR_page, text="Response Factor (range: 1-16 with increment 1)")
 AAIR_label_RF.grid(row=13, column=0, ipadx=5, ipady=5)
 AAIR_RF = customtkinter.CTkEntry(master=AAIR_page, placeholder_text="Response Factor")
 AAIR_RF.grid(row=13, column=1, ipadx=5, ipady=5)
 #Recovery Time
-AAIR_label_RecoveryT = customtkinter.CTkLabel(master=AAIR_page, text="Recovery Time (range: 2-16)")
+AAIR_label_RecoveryT = customtkinter.CTkLabel(master=AAIR_page, text="Recovery Time (range: 2-16 with increment 1)")
 AAIR_label_RecoveryT.grid(row=14, column=0, ipadx=5, ipady=5)
 AAIR_RecoveryT = customtkinter.CTkEntry(master=AAIR_page, placeholder_text="Recovery Time")
 AAIR_RecoveryT.grid(row=14, column=1, ipadx=5, ipady=5)
@@ -1758,50 +1758,50 @@ log_out.grid(row=17, column=0, ipadx=5, ipady=10)
 VVIR_page = customtkinter.CTkFrame(master=root)
 VVIR_page.pack(pady=0, padx=60)#, fill="both", expand = True)
 # output a label
-VVIR_label = customtkinter.CTkLabel(master=VVIR_page, text="Please Enter Parameters for VVIR")
+VVIR_label = customtkinter.CTkLabel(master=VVIR_page, text="VVIR")
 VVIR_label.grid(row=0, column=0, ipadx=5, ipady=5)
 # Lower Rate Limit
-VVIR_label_LRL = customtkinter.CTkLabel(master=VVIR_page, text="Lower Rate Limit (range: 30-175)")
+VVIR_label_LRL = customtkinter.CTkLabel(master=VVIR_page, text="Lower Rate Limit (range: 30-50 with increment 5, 50-90 with inccrement 1, 90-175 with increment 5)")
 VVIR_label_LRL.grid(row=1, column=0, ipadx=5, ipady=5)
 VVIR_LRL = customtkinter.CTkEntry(master=VVIR_page, placeholder_text="Lower Rate Limit")
 VVIR_LRL.grid(row=1, column=1, ipadx=5, ipady=5)
 # Upper Rate Limit
-VVIR_label_URL = customtkinter.CTkLabel(master=VVIR_page, text="Upper Rate Limit (range: 50-175)")
+VVIR_label_URL = customtkinter.CTkLabel(master=VVIR_page, text="Upper Rate Limit (range: 50-175 with increment 5)")
 VVIR_label_URL.grid(row=2, column=0, ipadx=5, ipady=5)
 VVIR_URL = customtkinter.CTkEntry(master=VVIR_page, placeholder_text="Upper Rate Limit")
 VVIR_URL.grid(row=2, column=1, ipadx=5, ipady=5)
 # Ventricular Amplitude
-VVIR_label_VA = customtkinter.CTkLabel(master=VVIR_page, text="Ventricular Amplitude (range: 0-100)")
+VVIR_label_VA = customtkinter.CTkLabel(master=VVIR_page, text="Ventricular Amplitude (range: 0-100 with increment 2)")
 VVIR_label_VA.grid(row=3, column=0, ipadx=5, ipady=5)
 VVIR_VA = customtkinter.CTkEntry(master=VVIR_page, placeholder_text="Ventricular Amplitude")
 VVIR_VA.grid(row=3, column=1, ipadx=5, ipady=5)
 #   Ventricular Pulse Width
-VVIR_label_VPW = customtkinter.CTkLabel(master=VVIR_page, text="Ventricular Pulse Width (range: 1-30)")
+VVIR_label_VPW = customtkinter.CTkLabel(master=VVIR_page, text="Ventricular Pulse Width (range: 1-30 with increment 1)")
 VVIR_label_VPW.grid(row=4, column=0, ipadx=5, ipady=5)
 VVIR_VPW = customtkinter.CTkEntry(master=VVIR_page, placeholder_text="Ventricular Pulse Width")
 VVIR_VPW.grid(row=4, column=1, ipadx=5, ipady=5)
 # VRP
-VVIR_label_VRP = customtkinter.CTkLabel(master=VVIR_page, text="VRP (range: 150-500)")
+VVIR_label_VRP = customtkinter.CTkLabel(master=VVIR_page, text="VRP (range: 150-500 with increment 10)")
 VVIR_label_VRP.grid(row=5, column=0, ipadx=5, ipady=5)
 VVIR_VRP = customtkinter.CTkEntry(master=VVIR_page, placeholder_text="VRP")
 VVIR_VRP.grid(row=5, column=1, ipadx=5, ipady=5)
 #Ventricular Sensitivity
-VVIR_label_VS = customtkinter.CTkLabel(master=VVIR_page, text="Ventricular Sensitivity (range: 0-5)")
+VVIR_label_VS = customtkinter.CTkLabel(master=VVIR_page, text="Ventricular Sensitivity (range: 0-100 with increment 2)")
 VVIR_label_VS.grid(row=6, column=0, ipadx=5, ipady=5)
 VVIR_VS = customtkinter.CTkEntry(master=VVIR_page, placeholder_text="Ventricular Sensitivity")
 VVIR_VS.grid(row=6, column=1, ipadx=5, ipady=5)
 # Hysteresis
-VVIR_label_H = customtkinter.CTkLabel(master=VVIR_page, text="Hysteresis Rate Limit (range: OFF, 30-175)")
+VVIR_label_H = customtkinter.CTkLabel(master=VVIR_page, text="Hysteresis Rate Limit (range: off, same as LRL)")
 VVIR_label_H.grid(row=7, column=0, ipadx=5, ipady=5)
 VVIR_H = customtkinter.CTkEntry(master=VVIR_page, placeholder_text="Hysteresis Rate Limit")
 VVIR_H.grid(row=7, column=1, ipadx=5, ipady=5)
 #Rate Smoothing
-VVIR_label_RS = customtkinter.CTkLabel(master=VVIR_page, text="Rate Smoothing (range: Off, 3, 6, 9, 12, 15,18,21, 25)")
+VVIR_label_RS = customtkinter.CTkLabel(master=VVIR_page, text="Rate Smoothing (range: off, 3, 6, 9, 12, 15,18,21, 25)")
 VVIR_label_RS.grid(row=8, column=0, ipadx=5, ipady=5)
 VVIR_RS = customtkinter.CTkEntry(master=VVIR_page, placeholder_text="Rate Smoothing")
 VVIR_RS.grid(row=8, column=1, ipadx=5, ipady=5)
 # Maximum Sensor Rate
-VVIR_label_MSR = customtkinter.CTkLabel(master=VVIR_page, text="MSR (range: 50-175)")
+VVIR_label_MSR = customtkinter.CTkLabel(master=VVIR_page, text="MSR (range: 50-175 with increment 5)")
 VVIR_label_MSR.grid(row=9, column=0, ipadx=5, ipady=5)
 VVIR_MSR = customtkinter.CTkEntry(master=VVIR_page, placeholder_text="Maximum Sensor Rate")
 VVIR_MSR.grid(row=9, column=1, ipadx=5, ipady=5)
@@ -1811,17 +1811,17 @@ VVIR_label_AT.grid(row=10, column=0, ipadx=5, ipady=5)
 VVIR_AT = customtkinter.CTkEntry(master=VVIR_page, placeholder_text="Activity Threshold")
 VVIR_AT.grid(row=10, column=1, ipadx=5, ipady=5)
 # Reaction Time
-VVIR_label_ReactionT = customtkinter.CTkLabel(master=VVIR_page, text="Reaction Time (range: 10-50)")
+VVIR_label_ReactionT = customtkinter.CTkLabel(master=VVIR_page, text="Reaction Time (range: 10-50 with increment 10)")
 VVIR_label_ReactionT.grid(row=11, column=0, ipadx=5, ipady=5)
 VVIR_ReactionT = customtkinter.CTkEntry(master=VVIR_page, placeholder_text="Reaction Time")
 VVIR_ReactionT.grid(row=11, column=1, ipadx=5, ipady=5)
 # Response Factor
-VVIR_label_RF = customtkinter.CTkLabel(master=VVIR_page, text="Response Factor (range: 1-16)")
+VVIR_label_RF = customtkinter.CTkLabel(master=VVIR_page, text="Response Factor (range: 1-16 with increment 1)")
 VVIR_label_RF.grid(row=12, column=0, ipadx=5, ipady=5)
 VVIR_RF = customtkinter.CTkEntry(master=VVIR_page, placeholder_text="Response Factor")
 VVIR_RF.grid(row=12, column=1, ipadx=5, ipady=5)
 #Recovery Time
-VVIR_label_RecoveryT = customtkinter.CTkLabel(master=VVIR_page, text="Recovery Time (range: 2-16)")
+VVIR_label_RecoveryT = customtkinter.CTkLabel(master=VVIR_page, text="Recovery Time (range: 2-16 with increment 1)")
 VVIR_label_RecoveryT.grid(row=13, column=0, ipadx=5, ipady=5)
 VVIR_RecoveryT = customtkinter.CTkEntry(master=VVIR_page, placeholder_text="Recovery Time")
 VVIR_RecoveryT.grid(row=13, column=1, ipadx=5, ipady=5)

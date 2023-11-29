@@ -7,9 +7,7 @@ import time
 
 # this file is the one you spit data to send
 
-
-
-frdm_port = "COM12"
+frdm_port = "COM3"
 
 Start = b'\x16'
 
@@ -19,13 +17,8 @@ SYNC = b'\x22'
 
 Fn_set = b'\x55'
 
-# ser = serial.Serial()
 ser = serial.Serial()
-# ser.baudrate = 115200
-# ser = serial.Serial('COM12', baudrate=115200)
 
-
-# def input():
 def input(lrl, url, amplitude, pw, rp, factor_input, threshold, mode):
     Start = b'\x16'
     print("here")
@@ -34,17 +27,6 @@ def input(lrl, url, amplitude, pw, rp, factor_input, threshold, mode):
     SYNC = b'\x22'
 
     Fn_set = b'\x55'
-    
-    # offset = 2
-    # m_input = 6
-    # r_input = 60
-    # pw_input = 2
-    # aplitude_input = 100
-    # ref_period = 150
-    # #detect threshold
-    # threshold_input = 80 
-    # max_input = 150
-    # factor_input = 30
     
     mode = struct.pack("B", int(mode))
     # rate = struct.pack("BB", 0, 1)
