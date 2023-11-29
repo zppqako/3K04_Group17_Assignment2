@@ -20,6 +20,7 @@ SYNC = b'\x22'
 Fn_set = b'\x55'
 
 # ser = serial.Serial()
+ser = serial.Serial()
 # ser.baudrate = 115200
 # ser = serial.Serial('COM12', baudrate=115200)
 
@@ -56,7 +57,7 @@ def input(lrl, url, aa, apw, arp, factor, threshold, mode):
     thre = int(threshold).to_bytes(2, byteorder='little') #comp_pwm threshold
     
     
-    signal_echo = Start + Fn_set + mode + rate+ pw + apl + rp+ thre + max + factor
+    signal_echo = Start + Fn_set + mode + rate + pw + apl + rp+ thre + max + factor
     print("test: ", signal_echo)
 
     with serial.Serial(frdm_port, 115200) as pacemaker:
