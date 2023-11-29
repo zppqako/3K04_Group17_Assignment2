@@ -297,6 +297,7 @@ def submit_voo():
             file.write(f"upper limit rate:{voo_lrl} \n")
             file.write(f"ventricular amplitude:{voo_va} \n")
             file.write(f"ventricular pulse width:{voo_vpw} \n")
+            input(voo_lrl, voo_url, voo_va, voo_vpw, 0, 0, 0, 2)
         if refresh() == 1:
             messagebox.showinfo("Success", "Successfully submit!")
 
@@ -426,6 +427,7 @@ def submit_aai():
             file.write(f"PVARP:{aai_pvarp} \n")
             file.write(f"Hysteresis:{aai_h} \n")
             file.write(f"Rate smoothing:{aai_rs} \n")
+            input(aai_lrl, aai_url, aai_aa, aai_apw, aai_arp, 0, 80, 1)
         if refresh() == 1:
             messagebox.showinfo("Success", "Successfully submit!")
 
@@ -549,6 +551,7 @@ def submit_vvi():
             file.write(f"ventricular sensitivity:{vvi_vs} \n")
             file.write(f"hysteresis:{vvi_h} \n")
             file.write(f"rate smoothing:{vvi_rs} \n")
+            input(vvi_lrl, vvi_url, vvi_va, vvi_vpw, vvi_vrp, 0, 80, 3)
         if refresh() == 1:
             messagebox.showinfo("Success", "Successfully submit!")
 
@@ -682,6 +685,7 @@ def submit_aoor():
             file.write(f"reaction time:{aoor_reactionT} \n")
             file.write(f"response factor:{aoor_rf} \n")
             file.write(f"recovery time:{aoor_recoveryT} \n")
+            input(aoor_lrl, aoor_url, aoor_aa, aoor_apw, 0, aoor_rf, 0, 4)
 
         if refresh() == 1:
             messagebox.showinfo("Success", "Successfully submit!")
@@ -815,6 +819,7 @@ def submit_voor():
             file.write(f"reaction time:{voor_reactionT} \n")
             file.write(f"response factor:{voor_rf} \n")
             file.write(f"recovery time:{voor_recoveryT} \n")
+            input(voor_lrl, voor_url, voor_va, voor_vpw, 0, voor_rf, 0, 5)
         if refresh() == 1:
             messagebox.showinfo("Success", "Successfully submit!")
 
@@ -1007,6 +1012,7 @@ def submit_aair():
             file.write(f"reaction time:{aair_reactionT} \n")
             file.write(f"response factor:{aair_rf} \n")
             file.write(f"recovery time:{aair_recoveryT} \n")
+            input(aair_lrl, aair_url, aair_aa, aair_apw, aair_arp, aair_rf, 80, 6)
         if refresh() == 1:
             messagebox.showinfo("Success", "Successfully submit!")
 
@@ -1189,6 +1195,7 @@ def submit_vvir():
             file.write(f"reaction time:{vvir_reactionT} \n")
             file.write(f"response factor:{vvir_rf} \n")
             file.write(f"recovery time:{vvir_recoveryT} \n")
+            input(vvir_lrl, vvir_url, vvir_va, vvir_vpw, vvir_vrp, vvir_rf, 80, 7)
         if refresh() == 1:
             messagebox.showinfo("Success", "Successfully submit!")
 

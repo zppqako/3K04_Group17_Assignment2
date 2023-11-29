@@ -26,7 +26,7 @@ ser = serial.Serial()
 
 
 # def input():
-def input(lrl, url, aa, apw, arp, factor, threshold, mode):
+def input(lrl, url, amplitude, pw, rp, factor_input, threshold, mode):
     Start = b'\x16'
     print("here")
     # second bit
@@ -50,10 +50,10 @@ def input(lrl, url, aa, apw, arp, factor, threshold, mode):
     # rate = struct.pack("BB", 0, 1)
     rate = int(lrl*2).to_bytes(2, byteorder='little')
     max = int(url).to_bytes(2, byteorder='little')
-    apl = int(aa).to_bytes(2, byteorder='little')
-    pw = int(apw).to_bytes(2, byteorder='little')
-    rp = int(arp).to_bytes(2, byteorder='little') #ref period
-    factor = int(factor).to_bytes(2, byteorder='little')
+    apl = int(amplitude).to_bytes(2, byteorder='little')
+    pw = int(pw).to_bytes(2, byteorder='little')
+    rp = int(rp).to_bytes(2, byteorder='little') #ref period
+    factor = int(factor_input).to_bytes(2, byteorder='little')
     thre = int(threshold).to_bytes(2, byteorder='little') #comp_pwm threshold
     
     
