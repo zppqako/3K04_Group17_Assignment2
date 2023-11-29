@@ -4,12 +4,9 @@ from tkinter import messagebox
 import time
 import threading
 import tkinter as tk
-#import usb.core
 import serial.tools.list_ports
 import struct
 from serial import Serial
-
-
 import customtkinter
 import hashlib
 import serial
@@ -18,11 +15,8 @@ from tkinter import messagebox, Canvas, Scrollbar
 import time
 import threading
 import tkinter as tk
-#import usb.core
-from DCM_serial import serial
-
-#serial communication
 from DCM_serial import input
+from Display_graph import plot_atrium, plot_ventricle
 
 customtkinter.set_appearance_mode("dark")
 customtkinter.set_default_color_theme("dark-blue")
@@ -1331,9 +1325,9 @@ log_out.pack(pady=12, padx=10)
 #check if the device is different than the previous one
 check_device = customtkinter.CTkButton(master=mode_page, text="Check device", command=check)
 check_device.pack(pady=12, padx=10)
-A_button = customtkinter.CTkButton(master=mode_page, text="Atrial Button")
+A_button = customtkinter.CTkButton(master=mode_page, text="Atrial Button", command = plot_atrium)
 A_button.pack(pady=12,padx=10)
-V_button = customtkinter.CTkButton(master=mode_page, text="Ventricular Button")
+V_button = customtkinter.CTkButton(master=mode_page, text="Ventricular Button", command = plot_ventricle)
 V_button.pack(pady=12,padx=10)
 
 
