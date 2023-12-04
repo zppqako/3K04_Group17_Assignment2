@@ -1,4 +1,3 @@
-import tkinter as tk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
 from DCM_serial import receive
